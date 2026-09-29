@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Twilight: 2000 Lifepath Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#CDB888; --paper:#EFE7D2; --paper2:#E6DCC2; --ink:#22241C; --muted:#6A6450;
+  --stamp:#A3302A; --olive:#4E5A2A; --rule:#B8A983; --shadow:rgba(40,30,10,.25);
+  --stencil:"Stardos Stencil","Impact","Arial Narrow",sans-serif;
+  --type:"Courier Prime","Courier New",Courier,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#1C1D17; --paper:#2A2A22; --paper2:#33322A; --ink:#E6DDC4; --muted:#A39A80;
+    --stamp:#D65A4E; --olive:#A3B36A; --rule:#4A4636; --shadow:rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#1C1D17; --paper:#2A2A22; --paper2:#33322A; --ink:#E6DDC4; --muted:#A39A80;
+  --stamp:#D65A4E; --olive:#A3B36A; --rule:#4A4636; --shadow:rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--type);font-size:16px;line-height:1.55}
+button,input,select{font:inherit;color:inherit}
+img{max-width:100%}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 14px 60px}
+h1,h2,h3{font-family:var(--stencil);font-weight:700;letter-spacing:.02em;margin:0;line-height:1.1}
+h1{font-size:clamp(2rem,6vw,3.2rem)}
+h2{font-size:1.5rem}
+h3{font-size:1.15rem}
+.sub{opacity:.75;margin:.3rem 0 0}
+.muted{color:var(--muted)}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+
+.btn{border:2px solid var(--ink);background:transparent;padding:.5rem .9rem;cursor:pointer;border-radius:2px;font-weight:700}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--olive);border-color:var(--olive)}
+.btn.danger{border-color:var(--stamp);color:var(--stamp)}
+.btn.danger:hover{background:var(--stamp);color:var(--paper)}
+.btn:disabled{opacity:.35;cursor:not-allowed;background:transparent;color:var(--ink)}
+.btn.small{padding:.2rem .6rem;font-size:.9rem}
+:focus-visible{outline:3px solid var(--olive);outline-offset:2px}
+
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:26px 16px;margin-top:14px}
+.folder{position:relative;background:var(--paper);padding:18px 16px 16px;box-shadow:0 2px 0 var(--rule),0 6px 14px var(--shadow);cursor:pointer;border:none;text-align:left;width:100%;border-radius:0 3px 3px 3px;transition:transform .15s}
+.folder::before{content:"";position:absolute;top:-12px;left:0;width:44%;height:13px;background:var(--paper);border-radius:4px 10px 0 0}
+.folder:hover{transform:translateY(-2px)}
+.folder .fname{font-family:var(--stencil);font-size:1.3rem}
+.folder .meta{font-size:.9rem;color:var(--muted);margin-top:4px}
+.folder .fstamp{position:absolute;right:10px;bottom:10px;transform:rotate(-8deg)}
+.empty{background:var(--paper);padding:28px;max-width:560px;box-shadow:0 6px 14px var(--shadow)}
+
+.stamp{display:inline-block;font-family:var(--stencil);color:var(--stamp);border:3px solid var(--stamp);padding:.1rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.08em;font-size:.85rem;opacity:.88}
+.stamp.olive{color:var(--olive);border-color:var(--olive)}
+.roll-stamp{font-size:1.9rem;padding:.2rem .8rem;transform:rotate(-6deg);margin:6px 0}
+.slam{animation:slam .38s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes slam{0%{transform:rotate(-14deg) scale(2.2);opacity:0}70%{opacity:.95}100%{transform:rotate(-6deg) scale(1);opacity:.88}}
+@media (prefers-reduced-motion: reduce){.slam{animation:none}.folder,.folder:hover{transform:none;transition:none}}
+
+.dossier{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+@media (max-width:820px){.dossier{grid-template-columns:minmax(0,1fr)}.sheet{order:-1;position:static!important}}
+.paper{background:var(--paper);box-shadow:0 2px 0 var(--rule),0 8px 18px var(--shadow);padding:20px 18px}
+.cover{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;border-bottom:2px dashed var(--rule);padding-bottom:14px;margin-bottom:6px}
+.namefield{flex:1 1 240px}
+.namefield label{display:block;font-size:.85rem;color:var(--muted)}
+.namefield input{width:100%;background:transparent;border:none;border-bottom:2px solid var(--ink);font-family:var(--stencil);font-size:1.6rem;padding:2px 0}
+.namefield input::placeholder{color:var(--muted);opacity:.6}
+.fileno{font-size:.85rem;color:var(--muted)}
+
+.step{padding:18px 0;border-bottom:1px solid var(--rule)}
+.step-head{display:flex;gap:12px;align-items:baseline;margin-bottom:8px}
+.step-num{font-family:var(--stencil);font-size:1.5rem;color:var(--olive);min-width:1.6em}
+.step.locked{opacity:.45}
+.step p{margin:.3rem 0 .7rem;max-width:62ch}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--rule);background:var(--paper2);padding:.35rem .75rem;cursor:pointer;border-radius:2px}
+.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.chip:disabled{cursor:not-allowed;opacity:.5}
+.txt{background:var(--paper2);border:none;border-bottom:2px solid var(--ink);padding:.35rem .5rem;min-width:0;width:100%;max-width:320px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+
+.attrs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+@media (max-width:480px){.attrs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.attr{border:2px solid var(--ink);padding:8px;text-align:center;background:var(--paper2)}
+.attr .an{font-size:.85rem;color:var(--muted)}
+.attr .av{font-family:var(--stencil);font-size:2.4rem;line-height:1}
+.attr .ab{display:flex;justify-content:center;gap:6px;margin-top:6px}
+.attr .ab button{width:2.4rem;height:2.4rem;padding:0}
+.attr.reduced{border-color:var(--stamp)}
+.attr.reduced .av{color:var(--stamp)}
+.budget{font-weight:700}
+.reroll{margin-left:6px}
+
+.dice{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.die{width:2.4rem;height:2.4rem;border:2px solid var(--ink);display:grid;place-items:center;font-weight:700;background:var(--paper2);border-radius:5px}
+.bg-card{border-left:4px solid var(--olive);padding:6px 0 6px 12px;margin:10px 0}
+.bg-card b{font-family:var(--stencil);font-size:1.2rem;font-weight:400}
+
+.gates{font-size:.9rem;color:var(--muted);margin-top:10px}
+.gates summary{cursor:pointer;color:var(--ink)}
+.gates ul{margin:.4rem 0;padding-left:1.2rem}
+
+.sheet{position:sticky;top:calc(12px + env(safe-area-inset-top,0px))}
+.sheet h3{margin-bottom:8px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:.95rem;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:700}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:10px 0;text-align:center}
+.sgrid div{border:1px solid var(--rule);padding:4px 0}
+.sgrid small{display:block;color:var(--muted);font-size:.75rem}
+.sgrid strong{font-family:var(--stencil);font-size:1.4rem;font-weight:400}
+.list{margin:.2rem 0 .8rem;padding:0;list-style:none}
+.list li{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dotted var(--rule);padding:2px 0}
+.sheet-sec{font-size:.85rem;color:var(--muted);margin-top:10px}
+
+.log{margin-top:18px}
+.log ol{list-style:none;padding:0;margin:8px 0 0;font-size:.92rem}
+.log li{padding:4px 0;border-bottom:1px dotted var(--rule)}
+.log time{color:var(--muted);margin-right:.5rem}
+
+.savebar{font-size:.85rem;color:var(--muted)}
+.backlink{background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;color:var(--ink)}
+
+/* ---- phase 2: careers ---- */
+.cat{margin:14px 0 4px;font-family:var(--stencil);font-size:1.1rem;color:var(--olive)}
+.careers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.ccard{border:2px solid var(--ink);background:var(--paper2);padding:8px 10px;text-align:left;cursor:pointer;border-radius:2px;display:flex;flex-direction:column;gap:2px}
+.ccard:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+.ccard:hover:not(:disabled) .cmeta{color:var(--paper);opacity:.8}
+.ccard b{font-family:var(--stencil);font-weight:400;font-size:1.1rem}
+.ccard .cmeta{font-size:.85rem;color:var(--muted)}
+.ccard:disabled,.ccard.off{border-color:var(--rule);cursor:not-allowed;opacity:.6}
+.ccard .why{font-size:.85rem;color:var(--stamp)}
+.ccard.officer{cursor:default}
+.ccard.officer:hover{background:var(--paper2);color:var(--ink)}
+.ccard.officer:hover .cmeta{color:var(--muted);opacity:1}
+.areas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.term{border:2px solid var(--ink);padding:14px;margin-top:14px;background:var(--paper)}
+.term-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between;border-bottom:1px dashed var(--rule);padding-bottom:8px;margin-bottom:6px}
+.term-head h3{font-size:1.3rem}
+.tstep{padding:10px 0;border-bottom:1px dotted var(--rule)}
+.tstep:last-child{border-bottom:none}
+.tstep h4{margin:0 0 6px;font-family:var(--stencil);font-weight:400;font-size:1.05rem}
+.note{font-size:.9rem;color:var(--muted);margin:.3rem 0}
+.warn{font-size:.9rem;color:var(--stamp);margin:.3rem 0}
+.die small{display:block;font-size:.6rem;font-weight:400;line-height:1;color:var(--muted)}
+.die.hit{border-color:var(--olive);box-shadow:inset 0 0 0 2px var(--olive)}
+.die{flex-direction:column;line-height:1.1}
+.hist{border-left:4px solid var(--rule);padding:6px 0 6px 12px;margin:10px 0;font-size:.95rem}
+.hist b{font-family:var(--stencil);font-weight:400;font-size:1.1rem}
+.ref{border:2px dashed var(--stamp);padding:8px 10px;margin-top:10px}
+.ref .note{color:var(--stamp)}
+select.txt{max-width:320px}
+
+/* ---- phase 4: final details and sheet ---- */
+textarea.txt.area{display:block;max-width:100%;width:100%;margin-top:8px;resize:vertical;line-height:1.4}
+.gear{margin:6px 0 10px;padding-left:1.2rem}
+.gear li{margin:6px 0}
+.cs{padding:26px 24px}
+.cs-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;border-bottom:3px double var(--ink);padding-bottom:14px;margin-bottom:14px}
+.cs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px 24px}
+.cs h3{border-bottom:1px solid var(--ink);padding-bottom:2px;margin-bottom:6px}
+.cs .sgrid small:last-child{font-size:.7rem}
+.cs-words{margin-top:18px;border-top:1px dashed var(--rule);padding-top:12px}
+.cs-words .kv{grid-template-columns:minmax(110px,auto) 1fr;gap:6px 14px}
+.cs-words .kv dd{font-weight:400}
+@media print{
+  :root,:root[data-theme="dark"]{--desk:#fff;--paper:#fff;--paper2:#fff;--ink:#000;--muted:#444;--rule:#999;--olive:#333;--stamp:#000;padding:0}
+  body{background:#fff}
+  .noprint{display:none!important}
+  .paper{box-shadow:none;padding:0}
+  .wrap{padding:0;max-width:none}
+}
+.model{margin-top:6px}
+.model select.txt{max-width:320px}
+
+/* ---- collapsible steps and service record ---- */
+details.step > summary, details.log > summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:0}
+details.step > summary::-webkit-details-marker, details.log > summary::-webkit-details-marker, .lgroup > summary::-webkit-details-marker{display:none}
+details.step > summary::after, details.log > summary::after{content:"";margin-left:auto;width:.6em;height:.6em;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg);align-self:center;transition:transform .15s}
+details:not([open]) > summary::after{transform:rotate(-45deg)}
+details[open].step > summary, details[open].log > summary{margin-bottom:8px}
+details.step.locked[open]{opacity:.45}
+.recap{font-size:.9rem;color:var(--muted)}
+details.log{margin-top:18px;border-top:2px dashed var(--rule);padding-top:14px}
+.lgroup{margin:8px 0;border-left:3px solid var(--rule);padding-left:10px}
+.lgroup > summary{cursor:pointer;font-family:var(--stencil);font-size:1.05rem;list-style:none}
+.lgroup > summary::before{content:"+ ";color:var(--olive)}
+.lgroup[open] > summary::before{content:"− "}
+.lgroup ol{list-style:none;padding:0;margin:6px 0 0;font-size:.92rem}
+.lgroup li{padding:3px 0;border-bottom:1px dotted var(--rule);display:flex;gap:10px}
+.yr{font-weight:700;color:var(--olive);min-width:3.2em}
+@media (prefers-reduced-motion: reduce){details > summary::after{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ================= rules data (Twilight: 2000 Player's Manual, life paths) ================= */
+const LETTERS = ['D','C','B','A'];
+const ATTRS = [
+  {k:'STR', n:'Strength'}, {k:'AGL', n:'Agility'},
+  {k:'INT', n:'Intelligence'}, {k:'EMP', n:'Empathy'}
+];
+const SKILL_ATTR = {
+  'Close Combat':'STR','Heavy Weapons':'STR','Stamina':'STR',
+  'Driving':'AGL','Ranged Combat':'AGL','Mobility':'AGL',
+  'Recon':'INT','Survival':'INT','Tech':'INT',
+  'Command':'EMP','Medical Aid':'EMP','Persuasion':'EMP'
+};
+const SKILL_ORDER = Object.keys(SKILL_ATTR);
+const GENERAL_SKILLS = ['Stamina','Mobility','Driving'];
+const NATIONS = [
+  {n:'American', lang:'English'}, {n:'Polish', lang:'Polish'}, {n:'Soviet', lang:'Russian'},
+  {n:'Swedish', lang:'Swedish'}, {n:'British', lang:'English'}, {n:'West German', lang:'German'},
+  {n:'East German', lang:'German'}, {n:'Canadian', lang:'English'}
+];
+const CHILDHOOD = [
+  {name:'Street Kid', skills:['Close Combat','Mobility','Recon'], spec:['Brawler','Melee','Runner','Infiltrator','Scrounger','Locksmith']},
+  {name:'Small Town', skills:['Driving','Ranged Combat','Survival'], spec:['Biker','Racer','Sniper','Farmer','Hunter','Quartermaster']},
+  {name:'Working Class', skills:['Close Combat','Stamina','Tech'], spec:['Brawler','Builder','Load Carrier','Scrounger','Blacksmith','Mechanic']},
+  {name:'Intellectual', skills:['Tech','Medical Aid','Persuasion'], spec:['Historian','Communications','Computers','Scientist','Linguist','Musician']},
+  {name:'Military Family', skills:['Stamina','Mobility','Ranged Combat'], spec:['Brawler','Martial Artist','Ranger','Mountaineer','Runner','Rifleman']},
+  {name:'Affluence', skills:['Mobility','Command','Persuasion'], spec:['Boatman','Rider','Runner','Linguist','Musician','Trader']}
+];
+const ENL = ['Private','Private First Class','Corporal','Sergeant','Staff Sergeant','Sergeant First Class','Master Sergeant','First Sergeant','Sergeant Major'];
+const OFF = ['Second Lieutenant','First Lieutenant','Captain','Major','Lieutenant Colonel','Colonel','Brigadier General','Major General','Lieutenant General','General'];
+const CATS = [
+  {k:'military', n:'Military'}, {k:'police', n:'Police'}, {k:'crime', n:'Crime'},
+  {k:'intel', n:'Intelligence'}, {k:'blue', n:'Blue collar'}, {k:'education', n:'Education'}, {k:'white', n:'White collar'}
+];
+const AT_WAR = { // for the next phase
+  military:['Brawler','Ranger','NBC','Rifleman','Scrounger','Improvised Munitions'],
+  blue:['Brawler','Rider','Runner','Quartermaster','Gunsmith','Mechanic'],
+  white:['Scout','Fisher','Forager','Scrounger','Frontline Leader','Interrogator'],
+  other:['Racer','Hunter','Forager','Quartermaster','Scrounger','Improvised Munitions']
+};
+
+/* requirement helpers: each returns null when met, or the reason it isn't */
+const ge = (d,k,v) => d.attrs[k] >= v;
+const noD = d => !Object.values(d.attrs).some(v=>v===0);
+const edu = d => (d.counts.liberalArts||0) + (d.counts.sciences||0);
+const need = (...checks) => d => { for(const [ok,why] of checks.map(f=>f(d))) if(!ok) return why; return null; };
+const at = (k,v,why) => d => [ge(d,k,v), why];
+
+const CAREERS = {
+  combatArms:{n:'Combat Arms', cat:'military', start:0, war:'military',
+    skills:['Close Combat','Heavy Weapons','Ranged Combat','Recon'],
+    spec:['Rifleman','Redleg','Tanker','Machinegunner','Launcher Crew','Combat Engineer'],
+    req:d=> (ge(d,'STR',2)||ge(d,'AGL',2)) ? null : 'Needs STR or AGL at B+',
+    gear:['Assault rifle, LMG or ATRL','D6 reloads','Flak jacket and helmet','Knife or D6 hand grenades','Personal medkit','Backpack']},
+  combatSupport:{n:'Combat Support', cat:'military', start:1, war:'military',
+    skills:['Recon','Survival','Tech'],
+    spec:['Intelligence','Linguist','Communications','NBC','Psy Ops','Interrogator'],
+    req:need(at('INT',2,'Needs INT at B+')),
+    gear:['Assault rifle','D6 reloads','Flak jacket and helmet','Knife or D6 hand grenades','Personal medkit','MOPP suit or manpack radio','Backpack']},
+  css:{n:'Combat Service Support', cat:'military', start:1, war:'military',
+    skills:['Medical Aid','Tech'],
+    spec:['Mechanic','Gunsmith','Electrician','Computers','Combat Medic','Field Surgeon'],
+    req:()=>null,
+    gear:['Assault rifle','D6 reloads','Flak jacket and helmet','Knife or D6 hand grenades','Personal medkit','Basic tools','Vehicle tools, weapon tools or surgical instruments','Backpack']},
+  specOps:{n:'Special Operations', cat:'military', start:3, war:'military',
+    skills:['Close Combat','Ranged Combat','Recon','Survival'],
+    spec:['Paratrooper','Ranger','Infiltrator','Combat Awareness','Sniper','SERE Training'],
+    req:need(d=>[ge(d,'STR',2)&&ge(d,'AGL',2),'Needs STR and AGL at B+'], at('INT',1,'Needs INT at C+'), d=>[!!d.counts.combatArms,'Needs a term in Combat Arms']),
+    gear:['Assault rifle or sniper rifle','Any pistol, D6 hand grenades or rifle-mounted grenade launcher','D6 reloads for each weapon','Binoculars or night vision goggles','Flak jacket and helmet','Knife','Personal medkit','Backpack']},
+  officer:{n:'Officer', cat:'military', start:0, war:'military', isOfficer:true,
+    skills:['Ranged Combat','Command','Persuasion'],
+    spec:['Sidearms','Intelligence','Tactician','Logistician','Frontline Leader','Quartermaster'],
+    req:need(at('INT',2,'Needs INT at B+'), d=>[noD(d),'No attribute may be D'], d=>[edu(d)>0,'Needs a term in Education']),
+    gear:['Pistol or submachine gun','D6 reloads','Manpack radio or night vision goggles','Flak jacket','Knife or D6 hand grenades','Personal medkit']},
+
+  policeOfficer:{n:'Police Officer', cat:'police', war:'other',
+    skills:['Close Combat','Ranged Combat'],
+    spec:['Sidearms','Melee','Runner','Racer','Biker','Scout'],
+    req:need(d=>[noD(d),'No attribute may be D'], d=>[!d.counts.prisoner,'Not after a term in prison']),
+    gear:['Pistol','D6 reloads','Handcuffs','Baton (club)','Patrol car with half a tank of gasoline']},
+  detective:{n:'Detective', cat:'police', war:'other',
+    skills:['Ranged Combat','Recon','Persuasion'],
+    spec:['Infiltrator','Interrogator','Intelligence','Investigator','Locksmith','Linguist'],
+    req:need(at('EMP',2,'Needs EMP at B+'), d=>[!!d.counts.policeOfficer,'Needs a term as Police Officer']),
+    gear:['Pistol','D6 reloads','Lockpicks']},
+  swat:{n:'SWAT', cat:'police', war:'other',
+    skills:['Close Combat','Ranged Combat','Recon'],
+    spec:['Martial Artist','Rifleman','Sniper','Combat Awareness','Infiltrator','Scout'],
+    req:need(d=>[ge(d,'STR',2)&&ge(d,'AGL',2),'Needs STR and AGL at B+'], d=>[!!d.counts.policeOfficer,'Needs a term as Police Officer']),
+    gear:['Assault rifle or submachine gun','D6 reloads','Night vision goggles','Flak jacket and helmet','Knife','Personal medkit']},
+
+  gang:{n:'Gang Member', cat:'crime', war:'other',
+    skills:['Close Combat','Ranged Combat'],
+    spec:['Brawler','Melee','Killer','Martial Artist','Rifleman','Sidearms'],
+    req:need(d=>[ge(d,'STR',1)&&ge(d,'AGL',1),'Needs STR and AGL at C+']),
+    gear:['Any civilian firearm','D6 reloads','Knife']},
+  burglar:{n:'Burglar', cat:'crime', war:'other',
+    skills:['Recon'],
+    spec:['Brawler','Sidearms','Mountaineer','Infiltrator','Electrician','Locksmith'],
+    req:need(d=>[ge(d,'AGL',1)&&ge(d,'INT',1),'Needs AGL and INT at C+']),
+    gear:['Pistol or revolver','D6 reloads','Lockpick set (TECH +2)']},
+  hustler:{n:'Hustler', cat:'crime', war:'other',
+    skills:['Recon','Persuasion'],
+    spec:['Sidearms','Infiltrator','Scout','Interrogator','Psy Ops','Trader'],
+    req:need(d=>[ge(d,'INT',1)&&ge(d,'EMP',1),'Needs INT and EMP at C+']),
+    gear:['Pistol or revolver','D6 reloads']},
+  prisoner:{n:'Prisoner', cat:'crime', war:'other',
+    skills:['Close Combat'],
+    spec:['Brawler','Melee','Killer','Ranger','SERE Training','Scrounger'],
+    req:()=>'Only after a prison sentence',
+    gear:['Any civilian firearm','D6 reloads','Knife']},
+
+  agent:{n:'Agent', cat:'intel', war:'other',
+    skills:['Ranged Combat','Recon','Persuasion'],
+    spec:['Intelligence','Locksmith','Investigator','Scout','Psy Ops','Sidearms'],
+    req:need(at('INT',2,'Needs INT at B+'), d=>[edu(d)>0,'Needs a term in Education']),
+    gear:['Pistol','D6 reloads','Lockpick set','Knife or explosives','Personal medkit']},
+  assassin:{n:'Assassin', cat:'intel', war:'other',
+    skills:['Close Combat','Ranged Combat'],
+    spec:['Killer','Interrogator','Sniper','Martial Artist','Improvised Munitions','Infiltrator'],
+    req:need(d=>[d.attrs.EMP<=1,'Needs EMP at C or D'], at('AGL',2,'Needs AGL at B+'), d=>[!!d.counts.agent,'Needs a term as Agent']),
+    gear:['Sniper rifle or submachine gun (suppressed)','D6 reloads','Radio or binoculars','Knife or explosives','Personal medkit']},
+  paramilitary:{n:'Paramilitary', cat:'intel', war:'other',
+    skills:['Heavy Weapons','Ranged Combat','Survival'],
+    spec:['Brawler','Rifleman','Machinegunner','Combat Engineer','Improvised Munitions','Tactician'],
+    req:need(d=>[ge(d,'STR',2)&&ge(d,'AGL',2),'Needs STR and AGL at B+'], d=>[d.milTerms>0,'Needs a term in the military']),
+    gear:['Assault rifle, LMG or ATRL','D6 reloads','Knife or D6 hand grenades','Personal medkit']},
+
+  driver:{n:'Driver', cat:'blue', war:'blue',
+    skills:['Tech'], spec:['Biker','Boatman','Navigator','Pilot','Racer','Tanker'],
+    req:need(at('AGL',2,'Needs AGL at B+')),
+    gear:['Any civilian firearm','D3 reloads','Any civilian car or civilian truck','Vehicle tools']},
+  farmer:{n:'Farmer', cat:'blue', war:'blue',
+    skills:['Survival'], spec:['Cook','Farmer','Fisher','Hunter','Forager','Rider'],
+    req:()=>null,
+    gear:['Any civilian firearm','D3 reloads','Pickup truck','Basic toolkit','2D6 rations of food']},
+  mechanic:{n:'Mechanic', cat:'blue', war:'blue',
+    skills:['Tech'], spec:['Blacksmith','Gunsmith','Locksmith','Mechanic','Scrounger','Improvised Munitions'],
+    req:()=>null,
+    gear:['Any civilian firearm','D3 reloads','Pickup truck','Basic tools','Vehicle tools or weapon tools']},
+  construction:{n:'Construction', cat:'blue', war:'blue',
+    skills:['Close Combat','Tech'], spec:['Brawler','Builder','Load Carrier','Blacksmith','Electrician','Improvised Munitions'],
+    req:need(at('STR',2,'Needs STR at B+')),
+    gear:['Any civilian firearm','D3 reloads','Crowbar','Pickup truck','Basic tools']},
+
+  liberalArts:{n:'Liberal Arts', cat:'education', war:'white',
+    skills:['Persuasion'], spec:['Historian','Cook','Linguist','Musician','Psy Ops','Counselor'],
+    req:need(d=>[ge(d,'INT',1)&&ge(d,'EMP',1),'Needs INT and EMP at C+']),
+    gear:['Any civilian firearm','D3 reloads','Dictionary in any language','Bicycle']},
+  sciences:{n:'Sciences', cat:'education', war:'white',
+    skills:['Tech'], spec:['Chemist','Communications','Computers','Electrician','Scientist','Linguist'],
+    req:need(at('INT',2,'Needs INT at B+')),
+    gear:['Any civilian firearm','D3 reloads','Bicycle or 2WD car with half a tank of gasoline']},
+
+  doctor:{n:'Doctor', cat:'white', war:'white',
+    skills:['Medical Aid','Persuasion'], spec:['Linguist','Combat Medic','Counselor','Field Surgeon','General Practitioner','Veterinarian'],
+    req:need(d=>[(d.counts.sciences||0)>=2,'Needs two terms in Sciences'], at('EMP',2,'Needs EMP at B+')),
+    gear:['Any civilian firearm','D3 reloads','D6 personal medkits','Pain relievers','Surgical instruments']},
+  professor:{n:'Professor', cat:'white', war:'white',
+    skills:['Persuasion'], spec:['Historian','Chemist','Scientist','Linguist','Psy Ops','Teacher'],
+    req:need(d=>[(d.counts.liberalArts||0)>=2,'Needs two terms in Liberal Arts'], at('INT',2,'Needs INT at B+')),
+    gear:['Any civilian firearm','D3 reloads','2WD car with half a tank of gasoline']},
+  manager:{n:'Manager', cat:'white', war:'white',
+    skills:['Tech','Command','Persuasion'], spec:['Quartermaster','Computers','Frontline Leader','Logistician','Teacher','Counselor'],
+    req:need(d=>[edu(d)>0,'Needs a term in Education'], at('EMP',2,'Needs EMP at B+')),
+    gear:['Any civilian firearm','D3 reloads','Pocket calculator','2WD car with half a tank of gasoline']}
+};
+const OFFICER_AREAS = ['combatArms','combatSupport','css','specOps'];
+const ALL_SPECS = [...new Set([
+  ...CHILDHOOD.flatMap(x=>x.spec), ...Object.values(CAREERS).flatMap(x=>x.spec), ...Object.values(AT_WAR).flat()
+])].sort();
+const GATES = [
+  'Combat Arms: STR or AGL B+',
+  'Combat Support: INT B+',
+  'Special Operations: STR and AGL B+, INT C+, a term in Combat Arms',
+  'Officer: INT B+, no D attribute, a term in Education',
+  'Liberal Arts: INT and EMP C+. Sciences: INT B+',
+  'Driver: AGL B+. Construction: STR B+'
+];
+
+/* ================= dice ================= */
+function d(n){ const a=new Uint32Array(1); crypto.getRandomValues(a); return 1 + (a[0] % n); }
+const sides = lvl => 6 + 2*lvl;
+
+/* ================= storage ================= */
+const LS_KEY = 't2k-lifepath-v1';
+const Store = {
+  chars:{}, docRef:null, remote:false, timer:null, status:'Saved on this device',
+  loadLocal(){
+    try{ const raw = localStorage.getItem(LS_KEY); if(raw){ const o = JSON.parse(raw); if(o && o.chars) this.chars = o.chars; } }catch(e){}
+    Object.values(this.chars).forEach(migrate);
+  },
+  saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({chars:this.chars})); }catch(e){} },
+  async connect(){
+    if(!window.claude || typeof window.claude.use !== 'function') return;
+    try{
+      const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+      if(!db || !user || typeof user.id !== 'function') return;
+      const uid = await user.id();
+      if(!uid) return;
+      this.docRef = db.doc(`data/users/${uid}/files/roster`);
+      let r = null;
+      try{ r = await this.docRef.get(); }catch(e){ r = null; }
+      let data = r;
+      if(r && typeof r.data === 'function') data = r.data();
+      else if(r && r.data && typeof r.data === 'object') data = r.data;
+      const remote = (data && data.chars) ? data.chars : {};
+      let localNewer = false;
+      for(const [id,c] of Object.entries(remote)){
+        if(!this.chars[id] || (c.updated||0) > (this.chars[id].updated||0)) this.chars[id] = migrate(c);
+      }
+      for(const [id,c] of Object.entries(this.chars)){
+        if(!remote[id] || (c.updated||0) > (remote[id].updated||0)) localNewer = true;
+      }
+      this.remote = true;
+      this.status = 'Saved to your account';
+      this.saveLocal();
+      if(localNewer) this.queue();
+      render();
+    }catch(e){ /* stay on device storage */ }
+  },
+  queue(){
+    this.saveLocal();
+    if(!this.remote || !this.docRef) return;
+    clearTimeout(this.timer);
+    this.status = 'Saving…'; updateSaveBar();
+    this.timer = setTimeout(async ()=>{
+      try{ await this.docRef.set({chars:this.chars, updated:Date.now()}); this.status='Saved to your account'; }
+      catch(e){ this.status='Saved on this device only (account save failed)'; }
+      updateSaveBar();
+    }, 700);
+  }
+};
+function migrate(c){
+  if(!Array.isArray(c.careers)) c.careers = [];
+  delete c.skills; delete c.specialties; delete c.terms; delete c.age; delete c.cuf;
+  return c;
+}
+
+/* ================= state & derivation ================= */
+const S = { view:'roster', cur:null, flash:null, confirmDelete:false, confirmScrap:false, closed:{} };
+
+function newId(){
+  let id;
+  do { const a=new Uint32Array(1); crypto.getRandomValues(a); id = 'F' + a[0].toString(36).toUpperCase().padStart(7,'0').slice(-7); } while(Store.chars[id]);
+  return id;
+}
+function newChar(){
+  const nums = Object.values(Store.chars).map(c=>c.fileNo||0);
+  const n = (nums.length ? Math.max(...nums) : 0) + 1;
+  return {
+    id:newId(),
+    fileNo:n, name:'', created:Date.now(), updated:Date.now(),
+    nationality:'', language:'',
+    attrRoll:null, attrs:{STR:1,AGL:1,INT:1,EMP:1}, attrsLocked:false,
+    childhood:null, careers:[], log:[]
+  };
+}
+function newTerm(forced){
+  return { career: forced ? 'prisoner' : null, area:null, forced:!!forced, inc:[], incLocked:false,
+    promoSkill:null, promo:null, specCol:'career', spec:null, years:null,
+    ageRoll:null, ageAttr:null, ageNone:false, warRoll:null, prisonRoll:null, override:null, rerolls:0 };
+}
+function cur(){ return Store.chars[S.cur]; }
+function touch(c){ c.updated = Date.now(); Store.queue(); }
+function log(c, text){ c.log.push({t:Date.now(), text}); }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+const militiaWar = (c,t,i) => i===0 && !!c.local && !!CAREERS[t.career] && CAREERS[t.career].cat==='military';
+const warByRoll = (c,t,i) => militiaWar(c,t,i) || (i>=1 && t.warRoll!=null && t.warRoll < i+1);
+function needsPrison(c,t,i){
+  const car = CAREERS[t.career];
+  return car && car.cat==='crime' && t.career!=='prisoner' && !(warByRoll(c,t,i) && t.override!=='extraTerm');
+}
+function promoResolved(t){ return !!t.promo && (!t.promo.success || !!(t.spec && t.spec.name)); }
+function ageResolved(t,i){
+  if(!t.years) return false;
+  if(i===0) return true;
+  if(t.ageRoll==null) return false;
+  if(t.ageRoll < i+1) return !!t.ageAttr || t.ageNone;
+  return true;
+}
+function termDone(c,i){
+  const t = c.careers[i];
+  if(!t || !t.career || !t.incLocked || !promoResolved(t) || !ageResolved(t,i)) return false;
+  if(i>=1 && t.warRoll==null) return false;
+  if(needsPrison(c,t,i) && t.prisonRoll==null) return false;
+  return true;
+}
+function atWar(c){
+  const n = c.careers.length; if(!n) return false;
+  const i = n-1, t = c.careers[i];
+  if(!termDone(c,i)) return false;
+  return (warByRoll(c,t,i) && t.override!=='extraTerm') || t.override==='forcedWar';
+}
+function sentenced(c){
+  const n = c.careers.length; if(!n) return false;
+  const i = n-1, t = c.careers[i];
+  return termDone(c,i) && !atWar(c) && needsPrison(c,t,i) && t.prisonRoll % 2 === 1;
+}
+
+// state of the character after the first `upto` terms (all of them if omitted)
+function derive(c, upto){
+  const n = upto==null ? c.careers.length : upto;
+  const attrs = {...c.attrs}, skills = {}, specs = [], counts = {};
+  let age = 18, cuf = 0, track = null, rank = -1, milTerms = 0, doneTerms = 0;
+  const ch = c.childhood;
+  if(ch && ch.skill) skills[ch.skill] = 0;
+  if(ch && ch.specialty) specs.push({name:ch.specialty, lang:ch.specialty==='Linguist'?ch.language:'', source:'Childhood'});
+  for(let i=0;i<n;i++){
+    const t = c.careers[i], car = CAREERS[t.career];
+    if(!car) continue;
+    if(car.cat==='military'){
+      if(car.isOfficer){ if(track!=='off'){ track='off'; rank=0; } }
+      else if(track!=='off'){ track='enl'; rank=Math.max(rank, car.start); }
+    }
+    if(t.incLocked) for(const s of t.inc) skills[s] = (s in skills) ? Math.min(3, skills[s]+1) : 0;
+    if(t.promo && t.promo.success){
+      if(car.cat==='military'){ const max=(track==='off'?OFF:ENL).length-1; rank=Math.min(max, rank+1); }
+      if(car.cat==='military' || car.cat==='intel') cuf = Math.min(3, cuf+1);
+    }
+    if(t.spec && t.spec.name) specs.push({name:t.spec.name, lang:t.spec.name==='Linguist'?(t.spec.lang||''):'', source:`Term ${i+1}`});
+    if(t.years) age += t.years;
+    if(t.ageAttr) attrs[t.ageAttr] = Math.max(0, attrs[t.ageAttr]-1);
+    if(termDone(c,i)){ doneTerms++; counts[t.career]=(counts[t.career]||0)+1; if(car.cat==='military') milTerms++; }
+  }
+  if(upto==null && c.atWar){
+    const w = c.atWar;
+    if(w.incLocked) for(const s of w.inc) skills[s] = (s in skills) ? Math.min(3, skills[s]+1) : 0;
+    if(w.spec) specs.push({name:w.spec, lang:w.spec==='Linguist'?(w.lang||''):'', source:'At War'});
+  }
+  const rankName = track==='off' ? OFF[rank] : track==='enl' ? ENL[rank] : null;
+  return {attrs, skills, specs, counts, age, cuf, track, rank, rankName, milTerms, doneTerms};
+}
+
+function careerReason(key, dd, area){
+  const car = CAREERS[key];
+  const r = car.req(dd);
+  if(r) return r;
+  if(car.isOfficer){
+    if(area) return CAREERS[area].req(dd);
+    if(!OFFICER_AREAS.some(a=>!CAREERS[a].req(dd))) return 'Must also qualify for a functional area';
+  }
+  return null;
+}
+function termCtx(c,i){
+  const t = c.careers[i], car = CAREERS[t.career], dd = derive(c,i);
+  const allowed = new Set([...car.skills, ...(t.area?CAREERS[t.area].skills:[]), ...GENERAL_SKILLS]);
+  const firstMil = car.cat==='military' && dd.milTerms===0;
+  if(firstMil) allowed.add('Ranged Combat');
+  let nco = false;
+  if(car.cat==='military' && !car.isOfficer && dd.track!=='off' && Math.max(dd.rank, car.start) >= 2){ allowed.add('Command'); nco = true; }
+  return {t, car, dd, allowed:SKILL_ORDER.filter(s=>allowed.has(s)), firstMil, nco};
+}
+function levelAfter(base, skill, steps){
+  if(skill in base) return base[skill] + steps;
+  return steps - 1; // a new skill starts at D
+}
+function specTable(t){ return (t.career==='officer' && t.specCol==='area' && t.area) ? CAREERS[t.area] : CAREERS[t.career]; }
+
+function warCtx(c){
+  const n = c.careers.length, last = CAREERS[c.careers[n-1].career];
+  const drafted = !c.local && last.cat!=='military' && last.cat!=='intel';
+  const col = drafted ? 'military' : last.war;
+  const base = derive(c, n);
+  const needRC = drafted && !('Ranged Combat' in base.skills);
+  return {n, last, drafted, col, base, needRC};
+}
+const COL_NAMES = {military:'Military', blue:'Blue collar', white:'White collar', other:'Other'};
+function warDone(c){
+  const w = c.atWar;
+  return !!(w && w.incLocked && w.spec && (w.spec!=='Linguist' || (w.lang||'').trim()));
+}
+function capacities(dd){
+  return { hit: Math.ceil((sides(dd.attrs.STR)+sides(dd.attrs.AGL))/4),
+           stress: Math.ceil((sides(dd.attrs.INT)+sides(dd.attrs.EMP))/4) };
+}
+const TERM_ACTS = new Set(['startTerm','chooseCareer','changeCareer','pick','clearPicks','lockInc','editInc','promoSkill','rollPromo','rerollPromo','specCol','rollSpec','rerollSpec','pickSpec','rollYears','rerollYears','rollAge','rerollAge','ageAttr','rollWar','rerollWar','rollPrison','rerollPrison','override','askScrap','scrapTerm']);
+
+/* ================= phase 4: final details ================= */
+const SUGGEST = {
+  moral:{label:'Moral code', hint:'One sentence you live by.', opts:[
+    'Nobody on my team gets left behind.',
+    'I keep my word, even to the enemy.',
+    'Civilians come first. Always.',
+    'Orders died with the chain of command. I decide what is right now.',
+    'Survival first. Morals are for people with full stomachs.',
+    'I never lie to the people who depend on me.']},
+  dream:{label:'Big dream', hint:'What keeps you going.', opts:[
+    'Get home, whatever it takes.',
+    'Find my family, wherever the war scattered them.',
+    'Build a safe place where people can grow food again.',
+    'Make the people who started this war pay.',
+    'Get my people through this alive.',
+    'See the lights come back on somewhere.']},
+  appearance:{label:'Appearance', hint:'What people notice first.', opts:[
+    'Faded uniform patched with civilian cloth',
+    'A pale scar along the jaw',
+    'Glasses held together with tape',
+    'Close-cropped hair gone grey too early',
+    'A battered wristwatch that still keeps time',
+    'Layers of mismatched cold-weather gear']},
+  met:{label:'How you met the group', hint:'Your first day together.', opts:[
+    'We were the only survivors of the same ambush.',
+    'They pulled me out of a collapsed building.',
+    'I traded them fuel and never left.',
+    'We were thrown together days before the division broke apart.',
+    'I guided them through the area when their maps ran out.',
+    'They caught me stealing their supplies and decided I was more useful alive.']}
+};
+/* ---- weapons by nationality (Twilight: 2000 weapon tables) ---- */
+const W = {
+  US:{label:'US', pistol:[['M9','9x19'],['M1911A1','.45']],
+      rifle:[['M16A2','5.56x45'],['M16A1','5.56x45'],['M4','5.56x45'],['M4A1','5.56x45']],
+      sniper:[['M21','7.62x51'],['M40A3','7.62x51'],['M82A1','.50 M2']],
+      lmg:[['M249','5.56x45'],['M60','7.62x51'],['M240B','7.62x51']],
+      atrl:[['M136 AT4','84mm'],['M72A3 LAW','66mm']],
+      ugl:[['M203','40x46'],['M79','40x46']], smg:[]},
+  SOV:{label:'Soviet', pistol:[['PM','9x18'],['PSM','5.45x18']],
+      rifle:[['AK-74','5.45x39'],['AKM','7.62x39']],
+      sniper:[['SVD-63','7.62x54']],
+      lmg:[['RPK-74','5.45x39'],['RPK','7.62x39'],['PKM','7.62x54']],
+      atrl:[['RPG-7V','83mm'],['RPG-16','58mm']],
+      ugl:[['GP-25','40mm']], smg:[['PP-19','9x18']]},
+  POL:{label:'Polish', pistol:[['P-83','9x18']],
+      rifle:[['AKM','7.62x39'],['PMK-60','7.62x39']],
+      sniper:[['SWD','7.62x54']],
+      lmg:[['RPK','7.62x39'],['PKM','7.62x54']],
+      atrl:[['RPG-7V','83mm']],
+      ugl:[['wz. 1974','40x47']], smg:[['PM-84','9x18']]},
+  SWE:{label:'Swedish', pistol:[['Pist 88','9x19']],
+      rifle:[['Ak 5','5.56x45'],['Ak 4','7.62x51']],
+      sniper:[['Psg 90','7.62x51'],['Ag 90','.50 M2']],
+      lmg:[['Ksp 90','5.56x45'],['Ksp 58B','7.62x51']],
+      atrl:[['Pskott m/86','84mm'],['Grg m/48','84mm']],
+      ugl:[], smg:[['Kpist m/45','9x19']]},
+  OTHER:{label:'Other military', pistol:[],
+      rifle:[['FN FAL','7.62x51'],['FAMAS','5.56x45']],
+      sniper:[['PSG-1','7.62x51']], lmg:[],
+      atrl:[['Armbrust','67mm'],['PzF 3','110mm']],
+      ugl:[], smg:[['Uzi','9x19'],['Vz 61','7.65x17']]}
+};
+const CIV = [['Combat pistol','9x19'],['Police pistol','9x19'],['Service revolver','.38 SPL'],
+  ['Bolt-action rifle','.30-06'],['Lever-action rifle','.30-30'],
+  ['Pump-action shotgun','12 GA'],['Semi-auto shotgun','12 GA'],['Double-barrelled shotgun','12 GA']];
+const CIV_PISTOLS = CIV.slice(0,3);
+function armoryFor(nat){
+  const n = (nat||'').toLowerCase();
+  if(/soviet|russia|ussr|belarus|ukrain/.test(n)) return {order:['SOV'], label:'Soviet weapons'};
+  if(/pol/.test(n)) return {order:['POL','SOV'], label:'Polish weapons'};
+  if(/swed/.test(n)) return {order:['SWE','US'], label:'Swedish weapons'};
+  if(/east german|gdr|czech|slovak|hungar|bulgar|romania/.test(n)) return {order:['SOV'], label:'Warsaw Pact: Soviet weapons'};
+  if(/americ|^us\b|u\.s\.|united states|usa/.test(n)) return {order:['US','OTHER'], label:'US weapons'};
+  if(!n.trim()) return {order:['US','OTHER'], label:'US weapons'};
+  return {order:['OTHER','US'], label:'NATO: other military weapons, then US'};
+}
+function weaponCat(text){
+  const t = text.toLowerCase();
+  if(t.includes('civilian firearm')) return 'civ';
+  if(t==='revolver') return 'revolver';
+  if(t.includes('sniper rifle')) return 'sniper';
+  if(t.includes('submachine gun')) return 'smg';
+  if(t.includes('assault rifle')) return 'rifle';
+  if(t==='lmg') return 'lmg';
+  if(t==='atrl') return 'atrl';
+  if(t.includes('grenade launcher')) return 'ugl';
+  if(/(^|\s)pistol$/.test(t)) return 'pistol';
+  return null;
+}
+function modelList(nat, cat){
+  if(cat==='civ') return CIV;
+  if(cat==='revolver') return [['Service revolver','.38 SPL']];
+  const arm = armoryFor(nat);
+  let list = [];
+  for(const k of arm.order){ list = W[k][cat] || []; if(list.length) break; }
+  if(!list.length) for(const k of ['OTHER','US']){ if((W[k][cat]||[]).length){ list = W[k][cat]; break; } }
+  if(cat==='pistol') list = [...list, ...CIV_PISTOLS];
+  return list;
+}
+
+function parseOr(str){
+  const k = str.lastIndexOf(' or ');
+  if(k<0) return [str];
+  const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
+  return [...str.slice(0,k).split(', '), str.slice(k+4)].map(cap);
+}
+function diceIn(text){
+  const m = /(^|\s)(\d?)D(\d+)\b/.exec(text);
+  return m ? {n: +(m[2]||1), s: +m[3], expr: `${m[2]||''}D${m[3]}`} : null;
+}
+function gearSource(c){
+  if(!warDone(c)) return null;
+  const ctx = warCtx(c);
+  const n = c.careers.length, key = ctx.drafted ? 'combatArms' : c.careers[n-1].career;
+  return {key, drafted: ctx.drafted};
+}
+function ensureFinal(c){
+  if(!c.final) c.final = {nickname:'', moral:'', dream:'', appearance:'', met:'', buddy:'', weapons:'',
+    gearSrc:null, gearPicks:{}, gearDice:null, models:{}, rads:null, rerolls:0};
+  if(!c.final.models) c.final.models = {};
+  const src = gearSource(c);
+  if(src && c.final.gearSrc !== src.key){ c.final.gearSrc = src.key; c.final.gearPicks = {}; c.final.gearDice = null; c.final.models = {}; }
+  return c.final;
+}
+function gearItems(c){
+  const src = gearSource(c); if(!src) return [];
+  const f = ensureFinal(c);
+  return CAREERS[src.key].gear.map((g,idx)=>{
+    const opts = parseOr(g);
+    const chosen = opts.length===1 ? opts[0] : (f.gearPicks[idx] || null);
+    let models = null, model = null;
+    const cat = chosen ? weaponCat(chosen.replace(/\s*\(suppressed\)/i,'')) : null;
+    if(cat){
+      models = modelList(c.nationality, cat);
+      const pick = f.models && f.models[idx];
+      model = models.find(m=>m[0]===pick) || models[0] || null;
+    }
+    return {idx, opts, chosen, dice: chosen ? diceIn(chosen) : null, models, model};
+  });
+}
+function rollN(n,s){ const r=[]; for(let k=0;k<n;k++) r.push(d(s)); return r; }
+function gearReady(c){ return gearItems(c).every(it=>it.chosen); }
+function gearRolled(c){
+  const f = ensureFinal(c), gd = f.gearDice;
+  if(!gd) return false;
+  return gearItems(c).every(it=>!it.dice || (gd.items[it.idx] && gd.items[it.idx].text===it.chosen));
+}
+function finalDone(c){
+  if(!warDone(c)) return false;
+  const f = ensureFinal(c);
+  return gearReady(c) && gearRolled(c) && f.rads!=null && !!f.moral.trim() && !!f.dream.trim();
+}
+function describeGear(c){
+  const f = ensureFinal(c), gd = f.gearDice || {items:{}};
+  return gearItems(c).filter(it=>it.chosen).map(it=>{
+    const r = gd.items[it.idx];
+    const base = (it.dice && r && r.text===it.chosen) ? it.chosen.replace(it.dice.expr, String(r.total)) : it.chosen;
+    return it.model ? `${base}: ${it.model[0]} (${it.model[1]})` : base;
+  });
+}
+
+/* ================= timeline: war breaks out in 2000 ================= */
+const WAR_YEAR = 2000;
+function timeline(c){
+  if(!(atWar(c) || c.atWar)) return null;
+  const finalAge = derive(c).age, birth = WAR_YEAR - finalAge;
+  let age = 18; const terms = [];
+  c.careers.forEach(t=>{ const start = age; age += (t.years||0); terms.push({start: birth+start, end: birth+age}); });
+  return {birth, y18: birth+18, finalAge, terms};
+}
+const yrs = (a,b) => a===b ? String(a) : `${a}–${b}`;
+function termYears(c,i){ const tl = timeline(c); return tl && tl.terms[i] ? yrs(tl.terms[i].start, tl.terms[i].end) : ''; }
+
+/* ================= phase 1 helpers ================= */
+function attrBudget(c){
+  if(!c.attrRoll) return 0;
+  return c.attrRoll.total + (Object.values(c.attrs).some(v=>v===0) ? 1 : 0);
+}
+function attrSpent(c){ return Object.values(c.attrs).reduce((s,v)=>s+Math.max(0,v-1),0); }
+function phase1Done(c){
+  const ch = c.childhood;
+  if(!ch || !ch.specialty || !ch.skill) return false;
+  if(ch.specialty==='Linguist' && !ch.language.trim()) return false;
+  return !!c.nationality.trim() && c.attrsLocked;
+}
+function statusOf(c){
+  if(finalDone(c)) return {t:'Ready for play', cls:'olive'};
+  if(warDone(c)) return {t:'Final details', cls:'olive'};
+  if(c.atWar || atWar(c)) return {t:'War broke out', cls:''};
+  const done = derive(c).doneTerms;
+  if(c.careers.length) return {t: done ? `${done} ${done===1?'term':'terms'} served` : 'First term', cls:'olive'};
+  if(phase1Done(c)) return {t:'Childhood complete', cls:'olive'};
+  if(c.attrRoll) return {t:'In progress', cls:''};
+  return {t:'New file', cls:''};
+}
+function displayName(c){ return c.name.trim() || `Unnamed recruit ${c.fileNo}`; }
+
+/* ================= actions ================= */
+function act(a, v, v2){
+  const c = cur();
+  const i = c ? c.careers.length-1 : -1;
+  const t = i>=0 ? c.careers[i] : null;
+  const T = `Term ${i+1}`;
+  const locked1 = c && c.careers.length>0;
+  const re = (label) => { t.rerolls++; return `${T}: Rerolled ${label}`; };
+  if(c && c.atWar && TERM_ACTS.has(a)) return;
+  switch(a){
+    /* --- roster --- */
+    case 'new': { const nc = newChar(); Store.chars[nc.id]=nc; log(nc,'File opened. Age 18, coolness under fire D.'); S.cur=nc.id; S.view='file'; touch(nc); window.scrollTo(0,0); break; }
+    case 'open': S.cur=v; S.view='file'; S.confirmDelete=false; S.confirmScrap=false; window.scrollTo(0,0); break;
+    case 'back': S.view='roster'; S.cur=null; S.confirmDelete=false; S.note=''; break;
+    case 'collapseAll': case 'expandAll': {
+      const keys = ['nation','attrs','child','careers','war','final','log'];
+      for(const k of keys) S.closed[(S.cur||'')+':'+k] = a==='collapseAll';
+      break;
+    }
+    case 'askDelete': S.confirmDelete=true; break;
+    case 'cancelDelete': S.confirmDelete=false; break;
+    case 'delete': delete Store.chars[S.cur]; S.view='roster'; S.cur=null; S.confirmDelete=false; Store.queue(); break;
+
+    /* --- phase 1 --- */
+    case 'nation': { const nat = NATIONS.find(x=>x.n===v); c.nationality=v; if(nat) c.language=nat.lang; touch(c); break; }
+    case 'rollAttr': case 'rerollAttr': {
+      const isRe = a==='rerollAttr';
+      if(locked1 || (isRe ? !c.attrRoll : (c.attrRoll || !c.nationality.trim()))) return;
+      const a1=d(3), a2=d(3);
+      c.attrRoll = {dice:[a1,a2], total:a1+a2};
+      if(isRe){ c.attrs={STR:1,AGL:1,INT:1,EMP:1}; c.attrsLocked=false; }
+      log(c, `${isRe?'Rerolled':'Rolled'} 2D3 for attribute increases: ${a1} + ${a2} = ${a1+a2}.${isRe?' Attributes reset to C.':''}`);
+      S.flash='attr'; touch(c); break;
+    }
+    case 'up': {
+      if(c.attrsLocked) return;
+      const val = c.attrs[v];
+      if(val===0) c.attrs[v]=1;
+      else if(val<3 && attrSpent(c) < attrBudget(c)) c.attrs[v]=val+1;
+      while(attrSpent(c) > attrBudget(c)){
+        const k = Object.keys(c.attrs).filter(x=>x!==v && c.attrs[x]>1).sort((x,y)=>c.attrs[y]-c.attrs[x])[0] || v;
+        c.attrs[k]--;
+      }
+      touch(c); break;
+    }
+    case 'down': {
+      if(c.attrsLocked) return;
+      const val = c.attrs[v];
+      if(val>1) c.attrs[v]=val-1;
+      else if(val===1 && !Object.entries(c.attrs).some(([k,x])=>k!==v && x===0)) c.attrs[v]=0;
+      touch(c); break;
+    }
+    case 'lockAttr': {
+      if(attrSpent(c)!==attrBudget(c)) return;
+      c.attrsLocked = true;
+      log(c, 'Attributes set: ' + ATTRS.map(x=>`${x.k} ${LETTERS[c.attrs[x.k]]}`).join(', ') + '.');
+      touch(c); break;
+    }
+    case 'rollChild': case 'rerollChild': {
+      const isRe = a==='rerollChild';
+      if(locked1 || (isRe ? !c.childhood : (c.childhood || !c.attrsLocked))) return;
+      const r = d(6);
+      c.childhood = {roll:r, name:CHILDHOOD[r-1].name, skill:null, specRoll:null, specialty:null, language:''};
+      log(c, `${isRe?'Rerolled':'Rolled'} D6 for childhood: ${r}, ${CHILDHOOD[r-1].name}.${isRe?' Skill and specialty cleared.':''}`);
+      S.flash='child'; touch(c); break;
+    }
+    case 'childSkill': {
+      if(!c.childhood || locked1 || c.childhood.skill===v) return;
+      c.childhood.skill = v;
+      if(c.childhood.specRoll) log(c, `Childhood skill changed to ${v} D.`);
+      touch(c); break;
+    }
+    case 'rollChildSpec': case 'rerollChildSpec': {
+      const ch = c.childhood, isRe = a==='rerollChildSpec';
+      if(!ch || locked1 || (isRe ? !ch.specRoll : (!ch.skill || ch.specRoll))) return;
+      const r = d(6), sp = CHILDHOOD[ch.roll-1].spec[r-1];
+      ch.specRoll = r; ch.specialty = sp; if(sp!=='Linguist') ch.language='';
+      log(c, isRe ? `Rerolled D6 for childhood specialty: ${r}, ${sp}.` : `Childhood skill: ${ch.skill} D. Rolled D6 for specialty: ${r}, ${sp}.`);
+      S.flash='cspec'; touch(c); break;
+    }
+
+    case 'toggleLocal': {
+      if(c.careers.length>0) return;
+      c.local = !c.local;
+      log(c, c.local ? 'Marked as local to the campaign area.' : 'No longer marked as local to the campaign area.');
+      touch(c); break;
+    }
+
+    /* --- phase 3: at war --- */
+    case 'beginWar': {
+      if(c.atWar || !atWar(c)) return;
+      c.atWar = {inc:[], incLocked:false, rolls:null, spec:null, lang:'', rerolls:0, allOwned:false};
+      const w = warCtx(c);
+      log(c, `At War term begins${w.drafted?'. Drafted into the military':''}. Specialty table: ${COL_NAMES[w.col]}.`);
+      touch(c); break;
+    }
+    case 'warPick': {
+      const w = c.atWar; if(!w || w.incLocked) return;
+      const ctx = warCtx(c);
+      if(w.inc.includes(v)) w.inc = w.inc.filter(x=>x!==v);
+      else if(w.inc.length<2 && levelAfter(ctx.base.skills, v, 1)<=3) w.inc.push(v);
+      touch(c); break;
+    }
+    case 'warLock': {
+      const w = c.atWar, ctx = warCtx(c);
+      if(!w || w.incLocked || w.inc.length!==2 || (ctx.needRC && !w.inc.includes('Ranged Combat'))) return;
+      w.incLocked = true;
+      const after = derive(c).skills;
+      log(c, `At War: Skill increases: ${w.inc.map(s=>`${s} ${LETTERS[after[s]]}`).join(', ')}.`);
+      touch(c); break;
+    }
+    case 'warEdit': { const w=c.atWar; if(w && w.incLocked && !w.rolls){ w.incLocked=false; touch(c); } break; }
+    case 'warSpec': case 'rewarSpec': {
+      const w = c.atWar, isRe = a==='rewarSpec';
+      if(!w || !w.incLocked || (isRe ? !w.rolls : w.rolls)) return;
+      const ctx = warCtx(c), table = AT_WAR[ctx.col];
+      const owned = new Set(ctx.base.specs.map(x=>x.name));
+      w.rolls = []; w.spec = null; w.lang = ''; w.allOwned = table.every(x=>owned.has(x));
+      if(!w.allOwned){
+        let r; do { r = d(6); w.rolls.push(r); } while(owned.has(table[r-1]));
+        w.spec = table[r-1];
+      } else { w.rolls.push(d(6)); }
+      const parts = w.rolls.map((r,k)=>`${r}, ${table[r-1]}${k<w.rolls.length-1||w.allOwned?' (already known)':''}`);
+      const msg = `D6 for At War specialty (${COL_NAMES[ctx.col]}): ${parts.join('; ')}.${w.allOwned?' Every result is known, so a specialty of choice is taken.':''}`;
+      if(isRe){ w.rerolls++; log(c, `At War: Rerolled ${msg}`); } else log(c, `At War: Rolled ${msg}`);
+      S.flash='wspec'; touch(c); break;
+    }
+    case 'warPickSpec': {
+      const w = c.atWar; if(!w || !w.allOwned || !v) return;
+      w.spec = v; log(c, `At War: Chose the ${v} specialty.`); touch(c); break;
+    }
+    case 'askScrapWar': S.confirmScrap=true; break;
+    case 'scrapWar': { if(!c.atWar) return; delete c.atWar; log(c,'At War term scrapped.'); S.confirmScrap=false; touch(c); break; }
+
+    /* --- phase 4: final details --- */
+    case 'fset': { if(!warDone(c)) return; const f=ensureFinal(c); f[v]=v2; touch(c); break; }
+    case 'gearPick': {
+      if(!warDone(c)) return; const f = ensureFinal(c);
+      f.gearPicks[v] = v2; touch(c); break;
+    }
+    case 'gearModel': {
+      if(!warDone(c)) return; const f = ensureFinal(c);
+      const [idx, name] = [v, v2];
+      f.models[idx] = name;
+      log(c, `Final: Chose the ${name} for ${gearItems(c)[+idx].chosen.toLowerCase()}.`);
+      touch(c); break;
+    }
+    case 'rollGear': case 'rerollGear': {
+      if(!warDone(c) || !gearReady(c)) return;
+      const f = ensureFinal(c), isRe = a==='rerollGear';
+      if(isRe && !f.gearDice) return;
+      const items = gearItems(c);
+      if(!f.gearDice || isRe) f.gearDice = {items:{}, food:null, water:null, ammo:null};
+      const gd = f.gearDice, parts = [];
+      for(const it of items){
+        if(!it.dice) continue;
+        const have = gd.items[it.idx];
+        if(have && have.text===it.chosen) continue;
+        const rolls = rollN(it.dice.n, it.dice.s);
+        gd.items[it.idx] = {text:it.chosen, rolls, total:rolls.reduce((x,y)=>x+y,0)};
+        parts.push(`${it.chosen} ${gd.items[it.idx].total}`);
+      }
+      for(const k of ['food','water','ammo']) if(gd[k]==null){ gd[k]=d(6); }
+      if(isRe || parts.length || !f._rationsLogged){
+        const msg = `gear dice: ${parts.length?parts.join(', ')+'. ':''}Rations: food ${gd.food}, water ${gd.water}, ammo ${gd.ammo} rounds.`;
+        if(isRe){ f.rerolls++; log(c, `Final: Rerolled ${msg}`); } else log(c, `Final: Rolled ${msg}`);
+        f._rationsLogged = true;
+      }
+      S.flash='gear'; touch(c); break;
+    }
+    case 'rollRads': case 'rerollRads': {
+      if(!warDone(c)) return; const f = ensureFinal(c), isRe = a==='rerollRads';
+      if(isRe ? f.rads==null : f.rads!=null) return;
+      f.rads = d(6);
+      if(isRe){ f.rerolls++; log(c, `Final: Rerolled D6 for starting permanent rads: ${f.rads}.`); }
+      else log(c, `Final: Rolled D6 for starting permanent rads: ${f.rads}.`);
+      S.flash='rads'; touch(c); break;
+    }
+    case 'openSheet': if(warDone(c)){ S.view='sheet'; window.scrollTo(0,0); } break;
+    case 'closeSheet': S.view='file'; S.note=''; break;
+    case 'print': try{ window.print(); }catch(e){ S.note='Printing is blocked here. Use Download PDF instead.'; } break;
+    case 'pdf': downloadPdf(c); return;
+
+    /* --- phase 2: terms --- */
+    case 'startTerm': {
+      if(!phase1Done(c) || atWar(c) || (t && !termDone(c,i))) return;
+      const forced = sentenced(c);
+      c.careers.push(newTerm(forced));
+      log(c, forced ? `Term ${i+2}: Sentenced to a term in prison.` : `Term ${i+2} begins.`);
+      S.confirmScrap=false; touch(c); break;
+    }
+    case 'chooseCareer': {
+      if(!t || t.incLocked || t.forced) return;
+      if(careerReason(v, derive(c,i), v2)) return;
+      t.career = v; t.area = v2 || null; t.inc = []; t.specCol='career';
+      log(c, `${T}: Entered ${CAREERS[v].n}${v2?` (functional area: ${CAREERS[v2].n})`:''}.`);
+      touch(c); break;
+    }
+    case 'changeCareer': {
+      if(!t || t.incLocked || t.forced) return;
+      t.career=null; t.area=null; t.inc=[]; touch(c); break;
+    }
+    case 'pick': {
+      if(!t || t.incLocked || t.inc.length>=2) return;
+      const ctx = termCtx(c,i);
+      if(!ctx.allowed.includes(v)) return;
+      const steps = t.inc.filter(x=>x===v).length + 1;
+      if(levelAfter(ctx.dd.skills, v, steps) > 3) return;
+      t.inc.push(v); touch(c); break;
+    }
+    case 'clearPicks': if(t && !t.incLocked){ t.inc=[]; touch(c); } break;
+    case 'lockInc': {
+      const ctx = termCtx(c,i);
+      if(t.inc.length!==2 || (ctx.firstMil && !t.inc.includes('Ranged Combat'))) return;
+      t.incLocked = true;
+      const after = derive(c,i+1).skills;
+      const uniq = [...new Set(t.inc)];
+      log(c, `${T}: Skill increases: ${uniq.map(s=>`${s} ${LETTERS[after[s]]}`).join(', ')}.`);
+      if(uniq.length===1) t.promoSkill = uniq[0];
+      touch(c); break;
+    }
+    case 'editInc': if(t && t.incLocked && !t.promo){ t.incLocked=false; t.promoSkill=null; touch(c); } break;
+    case 'promoSkill': if(t && t.incLocked && !t.promo && t.inc.includes(v)){ t.promoSkill=v; touch(c); } break;
+    case 'rollPromo': case 'rerollPromo': {
+      const isRe = a==='rerollPromo';
+      if(!t || !t.incLocked || !t.promoSkill || (isRe ? !t.promo : t.promo)) return;
+      const before = derive(c,i), after = derive(c,i+1);
+      const attrK = SKILL_ATTR[t.promoSkill];
+      const aS = sides(before.attrs[attrK]), sS = sides(after.skills[t.promoSkill]);
+      const r1 = d(aS), r2 = d(sS), ok = r1>=6 || r2>=6;
+      t.promo = {skill:t.promoSkill, attr:attrK, aS, sS, rolls:[r1,r2], success:ok};
+      t.spec = null;
+      const res = derive(c,i+1);
+      let msg = `${t.promoSkill} roll for promotion: ${attrK} D${aS} ${r1}, skill D${sS} ${r2}. ${ok?'Promoted':'No promotion'}.`;
+      if(ok && CAREERS[t.career].cat==='military') msg += ` Rank ${res.rankName}, coolness ${LETTERS[res.cuf]}.`;
+      else if(ok && CAREERS[t.career].cat==='intel') msg += ` Coolness ${LETTERS[res.cuf]}.`;
+      log(c, isRe ? re('promotion. '+msg) : `${T}: ${msg}`);
+      S.flash='promo'; touch(c); break;
+    }
+    case 'specCol': if(t && t.promo && t.promo.success && !t.spec){ t.specCol=v; touch(c); } break;
+    case 'rollSpec': case 'rerollSpec': {
+      const isRe = a==='rerollSpec';
+      if(!t || !t.promo || !t.promo.success || (isRe ? !t.spec : t.spec)) return;
+      const table = specTable(t), r = d(6), rolled = table.spec[r-1];
+      const owned = derive(c,i).specs.map(s=>s.name);
+      t.spec = owned.includes(rolled) ? {roll:r, rolled, name:null, dup:true, lang:''} : {roll:r, rolled, name:rolled, dup:false, lang:''};
+      const msg = `D6 for specialty (${table.n}): ${r}, ${rolled}.${t.spec.dup?' Already known, so a specialty of choice is taken instead.':''}`;
+      log(c, isRe ? re(msg) : `${T}: Rolled ${msg}`);
+      S.flash='tspec'; touch(c); break;
+    }
+    case 'pickSpec': {
+      if(!t || !t.spec || !t.spec.dup || !v) return;
+      t.spec.name = v; if(v!=='Linguist') t.spec.lang='';
+      log(c, `${T}: Chose the ${v} specialty.`); touch(c); break;
+    }
+    case 'rollYears': case 'rerollYears': {
+      const isRe = a==='rerollYears';
+      if(!t || !promoResolved(t) || (isRe ? !t.years : t.years)) return;
+      t.years = d(6);
+      const age = derive(c,i+1).age;
+      log(c, isRe ? re(`D6 for years served: ${t.years}. Now age ${age}.`) : `${T}: Served ${t.years} ${t.years===1?'year':'years'}. Now age ${age}.`);
+      S.flash='years'; touch(c); break;
+    }
+    case 'rollAge': case 'rerollAge': {
+      const isRe = a==='rerollAge';
+      if(!t || i<1 || !t.years || (isRe ? t.ageRoll==null : t.ageRoll!=null)) return;
+      t.ageRoll = d(8); t.ageAttr = null;
+      const hit = t.ageRoll < i+1;
+      t.ageNone = hit && !Object.values(derive(c,i).attrs).some(x=>x>0);
+      const msg = `D8 for age effects: ${t.ageRoll} against ${i+1} terms. ${hit ? (t.ageNone?'Age catches up, but every attribute is already D.':'Age catches up; one attribute drops.') : 'No effect.'}`;
+      log(c, isRe ? re(msg) : `${T}: Rolled ${msg}`);
+      S.flash='age'; touch(c); break;
+    }
+    case 'ageAttr': {
+      if(!t || t.ageRoll==null || !(t.ageRoll < i+1) || t.ageNone) return;
+      if(derive(c,i).attrs[v] <= 0) return;
+      t.ageAttr = v;
+      log(c, `${T}: Age lowers ${v} to ${LETTERS[derive(c,i+1).attrs[v]]}.`);
+      touch(c); break;
+    }
+    case 'rollWar': case 'rerollWar': {
+      const isRe = a==='rerollWar';
+      if(!t || i<1 || !ageResolved(t,i) || (isRe ? t.warRoll==null : t.warRoll!=null)) return;
+      t.warRoll = d(8); t.prisonRoll = null; t.override = null;
+      const msg = `D8 for war: ${t.warRoll} against ${i+1} terms. ${warByRoll(c,t,i)?'War breaks out.':'No war yet.'}`;
+      log(c, isRe ? re(msg) : `${T}: Rolled ${msg}`);
+      S.flash='war'; touch(c); break;
+    }
+    case 'rollPrison': case 'rerollPrison': {
+      const isRe = a==='rerollPrison';
+      if(!t || !needsPrison(c,t,i) || (i>=1 && t.warRoll==null) || !ageResolved(t,i) || (isRe ? t.prisonRoll==null : t.prisonRoll!=null)) return;
+      t.prisonRoll = d(6);
+      const msg = `D6 for prison: ${t.prisonRoll}. ${t.prisonRoll%2 ? 'Caught. Next term is spent in prison.' : 'Stayed free.'}`;
+      log(c, isRe ? re(msg) : `${T}: Rolled ${msg}`);
+      S.flash='prison'; touch(c); break;
+    }
+    case 'override': {
+      if(!t || !termDone(c,i)) return;
+      if(v==='forcedWar'){ t.override='forcedWar'; log(c, `${T}: Referee override. War breaks out now.`); }
+      else if(v==='extraTerm'){ t.override='extraTerm'; log(c, `${T}: Referee override. War is held off for another term.`); }
+      else { const was=t.override; t.override=null; log(c, `${T}: Referee override withdrawn${was==='forcedWar'?' (war no longer forced)':' (war roll stands)'}.`); }
+      touch(c); break;
+    }
+    case 'askScrap': S.confirmScrap=true; break;
+    case 'cancelScrap': S.confirmScrap=false; break;
+    case 'scrapTerm': {
+      if(!t) return;
+      c.careers.pop();
+      log(c, `${T} scrapped.`);
+      S.confirmScrap=false; touch(c); break;
+    }
+    default: return;
+  }
+  render();
+}
+
+/* ================= views ================= */
+const rollBtn = (act, label) => `<button class="btn primary" data-act="${act}">${label}</button>`;
+const rerollBtn = (act, title) => `<button class="btn small reroll" data-act="${act}"${title?` title="${esc(title)}"`:''}>Reroll</button>`;
+const die = (val, s, hit) => `<span class="die ${hit?'hit':''}">${val}${s?`<small>D${s}</small>`:''}</span>`;
+const stamp = (text, flashKey, cls='') => `<span class="stamp roll-stamp ${cls} ${S.flash===flashKey?'slam':''}">${esc(text)}</span>`;
+
+function viewRoster(){
+  const list = Object.values(Store.chars).sort((a,b)=>b.updated-a.updated);
+  const head = `
+    <div class="topbar">
+      <div><h1>Personnel files</h1><p class="sub">Twilight: 2000 life path character generation</p></div>
+      <button class="btn primary" data-act="new">Open a new file</button>
+    </div>`;
+  const save = `<p class="savebar" id="savebar" style="margin-top:22px">${esc(Store.status)}</p>`;
+  if(!list.length){
+    return head + `<div class="empty"><h2>No files yet</h2>
+      <p>Every survivor starts the same way: eighteen, green, and about to find out what the world has in mind. Open a new file to roll your first recruit.</p>
+      <button class="btn primary" data-act="new">Open a new file</button></div>` + save;
+  }
+  return head + `<div class="roster">` + list.map(c=>{
+    const st = statusOf(c), dd = derive(c);
+    const bits = [c.nationality, dd.rankName || (c.childhood && c.childhood.name), `Age ${dd.age}`].filter(Boolean).join(', ');
+    return `<button class="folder" data-act="open" data-v="${esc(c.id)}">
+      <div class="fname">${esc(displayName(c))}</div>
+      <div class="meta">File ${esc(c.id)}</div>
+      <div class="meta">${esc(bits)}</div>
+      <div style="height:2.4rem"></div>
+      <span class="stamp fstamp ${st.cls}">${esc(st.t)}</span>
+    </button>`;
+  }).join('') + `</div>` + save;
+}
+
+function stepNation(c){
+  const chips = NATIONS.map(n=>`<button class="chip" data-act="nation" data-v="${esc(n.n)}" aria-pressed="${c.nationality===n.n}">${esc(n.n)}</button>`).join('');
+  return `<section class="step">
+    <div class="step-head"><span class="step-num">1</span><h2>Nationality</h2></div>
+    <p>Nationality sets your native language and, later, your weapons and gear. Pick one or write in your own.</p>
+    <div class="chips">${chips}</div>
+    <div class="row">
+      <label style="flex:1 1 200px">Nationality<br><input class="txt" data-field="nationality" value="${esc(c.nationality)}" placeholder="e.g. Czech"></label>
+      <label style="flex:1 1 200px">Native language<br><input class="txt" data-field="language" value="${esc(c.language)}" placeholder="e.g. Czech"></label>
+    </div>
+    <div class="row">
+      <button class="chip" data-act="toggleLocal" aria-pressed="${!!c.local}" ${c.careers.length?'disabled':''}>Local to the campaign area</button>
+    </div>
+    <p class="note">Locals aren't drafted when war comes. A local who starts in the military serves as local militia: war breaks out at the end of the first term.${c.careers.length?' Locked once the first career term begins.':' Set this before the first career term.'}</p>
+  </section>`;
+}
+
+function stepAttrs(c){
+  const locked = !c.nationality.trim() && !c.attrRoll;
+  const frozen = c.careers.length>0;
+  let body;
+  if(!c.attrRoll){
+    body = `<p>All four attributes start at C. Roll 2D3 to find how many one-step increases you get. You may also drop one attribute to D for one extra increase. Nothing goes above A.</p>
+      <button class="btn primary" data-act="rollAttr" ${locked?'disabled':''}>Roll 2D3</button>
+      ${locked?'<p class="muted">Choose a nationality first.</p>':''}`;
+  } else {
+    const left = attrBudget(c) - attrSpent(c);
+    const reducedExists = Object.values(c.attrs).some(v=>v===0);
+    const cells = ATTRS.map(a=>{
+      const v = c.attrs[a.k];
+      const canUp = !c.attrsLocked && (v===0 || (v<3 && left>0));
+      const canDown = !c.attrsLocked && (v>1 || (v===1 && !reducedExists));
+      return `<div class="attr ${v===0?'reduced':''}">
+        <div class="an">${a.n}</div>
+        <div class="av" aria-label="${a.n} ${LETTERS[v]}">${LETTERS[v]}</div>
+        ${c.attrsLocked?'':`<div class="ab">
+          <button class="btn small" data-act="down" data-v="${a.k}" ${canDown?'':'disabled'} aria-label="Lower ${a.n}">−</button>
+          <button class="btn small" data-act="up" data-v="${a.k}" ${canUp?'':'disabled'} aria-label="Raise ${a.n}">+</button>
+        </div>`}
+      </div>`;
+    }).join('');
+    body = `<div class="dice">
+        ${c.attrRoll.dice.map(x=>die(x)).join('<span>+</span>')}
+        ${stamp(c.attrRoll.total+' increases','attr')}
+        ${frozen?'':rerollBtn('rerollAttr','Rolls 2D3 again and resets all attributes to C')}
+      </div>
+      <div class="attrs">${cells}</div>
+      ${c.attrsLocked
+        ? `<p class="muted">Attributes are set.${frozen?' Age effects from career terms show on the summary.':''}</p>`
+        : `<div class="row"><span class="budget">${left} ${left===1?'increase':'increases'} left${reducedExists?' (one earned by the attribute at D)':''}</span>
+           <button class="btn primary" data-act="lockAttr" ${left===0?'':'disabled'}>Set attributes</button></div>`}
+      ${frozen?'':`<details class="gates"><summary>Career requirements to keep in mind</summary><ul>${GATES.map(g=>`<li>${esc(g)}</li>`).join('')}</ul></details>`}`;
+  }
+  return `<section class="step ${locked?'locked':''}">
+    <div class="step-head"><span class="step-num">2</span><h2>Attributes</h2></div>${body}</section>`;
+}
+
+function stepChild(c){
+  const ch = c.childhood;
+  const locked = !c.attrsLocked && !ch;
+  const frozen = c.careers.length>0;
+  let body;
+  if(!ch){
+    body = `<p>Roll D6 to learn how you grew up. You take one skill at D from that background, then roll for a specialty.</p>
+      <button class="btn primary" data-act="rollChild" ${locked?'disabled':''}>Roll D6</button>
+      ${locked?'<p class="muted">Set your attributes first.</p>':''}`;
+  } else {
+    const bg = CHILDHOOD[ch.roll-1];
+    const skillChips = bg.skills.map(s=>`<button class="chip" data-act="childSkill" data-v="${esc(s)}" aria-pressed="${ch.skill===s}" ${frozen?'disabled':''}>${esc(s)}</button>`).join('');
+    body = `<div class="dice">${die(ch.roll)} ${stamp(bg.name,'child')}
+        ${frozen?'':rerollBtn('rerollChild','Rolls a new background and clears its skill and specialty')}</div>
+      <div class="bg-card"><b>Choose one skill at level D</b><div class="chips" style="margin-top:6px">${skillChips}</div></div>
+      ${ch.specRoll
+        ? `<div class="bg-card"><b>Specialty</b>
+            <div class="dice" style="margin-top:6px">${die(ch.specRoll)} ${stamp(ch.specialty,'cspec','olive')}
+            ${frozen?'':rerollBtn('rerollChildSpec')}</div>
+            ${ch.specialty==='Linguist'?`<label>Second language<br><input class="txt" data-field="childLang" value="${esc(ch.language)}" placeholder="e.g. Russian"></label>`:''}
+          </div>`
+        : `<div class="row"><button class="btn primary" data-act="rollChildSpec" ${ch.skill?'':'disabled'}>Roll D6 for specialty</button>
+           ${ch.skill?'':'<span class="muted">Choose a skill first.</span>'}</div>`}`;
+  }
+  return `<section class="step ${locked?'locked':''}">
+    <div class="step-head"><span class="step-num">3</span><h2>Childhood</h2></div>${body}</section>`;
+}
+
+/* ---- career terms ---- */
+function careerPicker(c,i){
+  const dd = derive(c,i);
+  let html = `<p>Choose a career for this term. Careers you don't qualify for yet show why.</p>`;
+  for(const cat of CATS){
+    const keys = Object.keys(CAREERS).filter(k=>CAREERS[k].cat===cat.k && k!=='prisoner');
+    html += `<div class="cat">${cat.n}</div><div class="careers">`;
+    for(const k of keys){
+      const car = CAREERS[k];
+      const why = careerReason(k, dd);
+      const meta = `<span class="cmeta">${esc(car.skills.join(', '))}${car.cat==='military'?`. Starts at ${car.isOfficer?'Second Lieutenant':ENL[car.start]}`:''}</span>`;
+      if(car.isOfficer){
+        const areas = OFFICER_AREAS.map(a=>{
+          const r = why || careerReason(k, dd, a);
+          return `<button class="chip" data-act="chooseCareer" data-v="officer" data-v2="${a}" ${r?'disabled':''} title="${esc(r||'')}">${esc(CAREERS[a].n)}</button>`;
+        }).join('');
+        html += `<div class="ccard officer ${why?'off':''}"><b>${car.n}</b>${meta}
+          ${why?`<span class="why">${esc(why)}</span>`:`<span class="cmeta">Pick a functional area you also qualify for:</span><div class="areas">${areas}</div>`}</div>`;
+      } else {
+        html += `<button class="ccard" data-act="chooseCareer" data-v="${k}" ${why?'disabled':''}><b>${car.n}</b>${meta}${why?`<span class="why">${esc(why)}</span>`:''}</button>`;
+      }
+    }
+    html += `</div>`;
+  }
+  return html;
+}
+
+function incStep(c,i){
+  const ctx = termCtx(c,i), t = ctx.t;
+  const base = ctx.dd.skills;
+  if(t.incLocked){
+    const after = derive(c,i+1).skills;
+    const uniq = [...new Set(t.inc)];
+    return `<div class="tstep"><h4>Skill increases</h4>
+      <div class="chips">${uniq.map(s=>`<span class="chip" aria-pressed="true">${esc(s)} ${LETTERS[after[s]]}</span>`).join('')}</div>
+      ${t.promo?'':'<div class="row"><button class="btn small" data-act="editInc">Change increases</button></div>'}</div>`;
+  }
+  const chips = ctx.allowed.map(s=>{
+    const n = t.inc.filter(x=>x===s).length;
+    const nowLvl = s in base ? LETTERS[base[s]] : '–';
+    const nextLvl = levelAfter(base, s, n+1);
+    const can = t.inc.length<2 && nextLvl<=3;
+    const shown = n ? LETTERS[levelAfter(base,s,n)] : nowLvl;
+    return `<button class="chip" data-act="pick" data-v="${esc(s)}" aria-pressed="${n>0}" ${can?'':'disabled'}>${esc(s)} ${n?`${nowLvl}→${shown}`:nowLvl}</button>`;
+  }).join('');
+  const rcMissing = ctx.firstMil && t.inc.length===2 && !t.inc.includes('Ranged Combat');
+  return `<div class="tstep"><h4>Skill increases</h4>
+    <p class="note">Raise two skills one step each, or one skill two steps. A new skill starts at D. Choose from this career's skills or Stamina, Mobility and Driving.</p>
+    ${ctx.firstMil?'<p class="note">First military term: one increase must be Ranged Combat.</p>':''}
+    ${ctx.nco?'<p class="note">As an NCO you may also raise Command.</p>':''}
+    <div class="chips">${chips}</div>
+    ${rcMissing?'<p class="warn">One of the two increases must be Ranged Combat.</p>':''}
+    <div class="row"><span class="budget">${2-t.inc.length} left</span>
+      <button class="btn small" data-act="clearPicks" ${t.inc.length?'':'disabled'}>Clear</button>
+      <button class="btn primary" data-act="lockInc" ${t.inc.length===2 && !rcMissing?'':'disabled'}>Lock in increases</button></div>
+  </div>`;
+}
+
+function promoStep(c,i){
+  const t = c.careers[i], car = CAREERS[t.career];
+  const uniq = [...new Set(t.inc)];
+  let html = `<div class="tstep"><h4>Promotion</h4>`;
+  if(!t.promo){
+    html += `<p class="note">Make an unmodified roll for one of the skills you raised: attribute die plus skill die, success on any 6 or higher.</p>
+      <div class="chips">${uniq.map(s=>`<button class="chip" data-act="promoSkill" data-v="${esc(s)}" aria-pressed="${t.promoSkill===s}">${esc(s)}</button>`).join('')}</div>
+      <div class="row"><button class="btn primary" data-act="rollPromo" ${t.promoSkill?'':'disabled'}>Roll ${esc(t.promoSkill||'skill')}</button></div>`;
+  } else {
+    const p = t.promo, res = derive(c,i+1);
+    let effect = '';
+    if(p.success && car.cat==='military') effect = `<p class="note">Rank ${esc(res.rankName)}, coolness under fire ${LETTERS[res.cuf]}.</p>`;
+    else if(p.success && car.cat==='intel') effect = `<p class="note">Coolness under fire ${LETTERS[res.cuf]}.</p>`;
+    html += `<div class="dice"><span class="muted">${esc(p.skill)}:</span>${die(p.rolls[0],p.aS,p.rolls[0]>=6)}${die(p.rolls[1],p.sS,p.rolls[1]>=6)}
+      ${stamp(p.success?'Promoted':'No promotion','promo',p.success?'olive':'')}
+      ${rerollBtn('rerollPromo','Rolls the promotion again and clears this term\'s specialty')}</div>${effect}`;
+  }
+  html += `</div>`;
+  if(t.promo && t.promo.success) html += specStep(c,i);
+  return html;
+}
+
+function specStep(c,i){
+  const t = c.careers[i];
+  let html = `<div class="tstep"><h4>Specialty</h4>`;
+  if(!t.spec){
+    if(t.career==='officer' && t.area){
+      html += `<p class="note">Officers choose which table to roll on.</p><div class="chips">
+        <button class="chip" data-act="specCol" data-v="career" aria-pressed="${t.specCol!=='area'}">Officer</button>
+        <button class="chip" data-act="specCol" data-v="area" aria-pressed="${t.specCol==='area'}">${esc(CAREERS[t.area].n)}</button></div>`;
+    }
+    html += `<div class="row"><button class="btn primary" data-act="rollSpec">Roll D6 for specialty</button></div>`;
+  } else {
+    const s = t.spec;
+    html += `<div class="dice">${die(s.roll)} ${stamp(s.rolled,'tspec',s.dup?'':'olive')} ${rerollBtn('rerollSpec')}</div>`;
+    if(s.dup){
+      const owned = new Set(derive(c,i).specs.map(x=>x.name));
+      html += `<p class="note">You already have ${esc(s.rolled)}, so choose any specialty instead.</p>
+        <select class="txt" data-change="pickSpec" aria-label="Choose a specialty"><option value="">Choose…</option>
+        ${ALL_SPECS.filter(x=>!owned.has(x)).map(x=>`<option ${s.name===x?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+    }
+    if(s.name==='Linguist') html += `<div class="row"><label>Language<br><input class="txt" data-field="termLang" value="${esc(s.lang)}" placeholder="e.g. Polish"></label></div>`;
+  }
+  return html + `</div>`;
+}
+
+function agingStep(c,i){
+  const t = c.careers[i];
+  let html = `<div class="tstep"><h4>Aging</h4>`;
+  if(!t.years){
+    html += `<p class="note">The term lasts D6 years.</p><div class="row">${rollBtn('rollYears','Roll D6 years')}</div>`;
+    return html + `</div>`;
+  }
+  const age = derive(c,i+1).age;
+  html += `<div class="dice">${die(t.years)} ${stamp('Age '+age,'years')} ${rerollBtn('rerollYears')}</div>`;
+  if(i===0){ html += `<p class="note">No risk of age effects after the first term.</p>`; return html + `</div>`; }
+  if(t.ageRoll==null){
+    html += `<p class="note">Roll D8. Lower than ${i+1} (terms completed) and one attribute drops a step.</p><div class="row">${rollBtn('rollAge','Roll D8 for age effects')}</div>`;
+  } else {
+    const hit = t.ageRoll < i+1;
+    html += `<div class="dice" style="margin-top:8px">${die(t.ageRoll,8,!hit)} ${stamp(hit?'Age takes its toll':'No effect','age',hit?'':'olive')} ${rerollBtn('rerollAge')}</div>`;
+    if(hit && t.ageNone) html += `<p class="note">Every attribute is already D, so nothing drops.</p>`;
+    else if(hit){
+      const base = derive(c,i).attrs;
+      html += `<p class="note">Choose the attribute that drops one step.</p><div class="chips">${ATTRS.map(a=>
+        `<button class="chip" data-act="ageAttr" data-v="${a.k}" aria-pressed="${t.ageAttr===a.k}" ${base[a.k]>0?'':'disabled'}>${a.k} ${LETTERS[base[a.k]]}${t.ageAttr===a.k?'→'+LETTERS[base[a.k]-1]:''}</button>`).join('')}</div>`;
+    }
+  }
+  return html + `</div>`;
+}
+
+function warStep(c,i){
+  const t = c.careers[i];
+  let html = `<div class="tstep"><h4>The war</h4>`;
+  if(i===0 && militiaWar(c,t,i)) html += `<div class="dice">${stamp('War breaks out','war')}</div><p class="note">Local militia: war breaks out at the end of the first term.</p>`;
+  else if(i===0) html += `<p class="note">No risk of war after the first term.</p>`;
+  else if(t.warRoll==null) html += `<p class="note">Roll D8. Lower than ${i+1} (terms completed) and war breaks out.</p><div class="row">${rollBtn('rollWar','Roll D8 for war')}</div>`;
+  else {
+    const war = warByRoll(c,t,i);
+    html += `<div class="dice">${die(t.warRoll,8)} ${stamp(war?'War breaks out':'No war yet','war',war?'':'olive')} ${rerollBtn('rerollWar','Rolls for war again and clears any prison roll and Referee override')}</div>`;
+  }
+  if(needsPrison(c,t,i) && (i===0 || t.warRoll!=null)){
+    html += `<div style="margin-top:10px"><p class="note">After a term of crime with no war, roll D6. Odd means the next term is in prison.</p>`;
+    html += t.prisonRoll==null ? `<div class="row">${rollBtn('rollPrison','Roll D6 for prison')}</div>`
+      : `<div class="dice">${die(t.prisonRoll)} ${stamp(t.prisonRoll%2?'Sentenced':'Stayed free','prison',t.prisonRoll%2?'':'olive')} ${rerollBtn('rerollPrison')}</div>`;
+    html += `</div>`;
+  }
+  return html + `</div>`;
+}
+
+function termOutcome(c,i){
+  const t = c.careers[i];
+  const war = atWar(c);
+  let html = '';
+  const refButtons = [];
+  if(t.override==='forcedWar' || t.override==='extraTerm') refButtons.push(`<button class="btn small" data-act="override" data-v="clear">Withdraw override</button>`);
+  else if(warByRoll(c,t,i)) refButtons.push(`<button class="btn small danger" data-act="override" data-v="extraTerm">Hold off the war, allow another term</button>`);
+  else refButtons.push(`<button class="btn small danger" data-act="override" data-v="forcedWar">Force war now</button>`);
+  html += `<div class="ref"><p class="note">Referee overrides${t.override?`: ${t.override==='forcedWar'?'war forced':'war held off'}`:''}</p><div class="row" style="margin-top:0">${refButtons.join('')}</div></div>`;
+  if(war){
+    html += `<div class="row">${rollBtn('beginWar','Begin the At War term')}</div>`;
+  } else {
+    const jail = sentenced(c);
+    html += `<div class="row">${rollBtn('startTerm', jail ? `Begin term ${i+2} in prison` : `Begin term ${i+2}`)}</div>`;
+  }
+  return html;
+}
+
+function termPanel(c,i){
+  const t = c.careers[i];
+  const car = CAREERS[t.career];
+  const dd = derive(c,i+1);
+  const span = termYears(c,i);
+  const head = `<div class="term-head"><h3>Term ${i+1}${car?`: ${esc(car.n)}${t.area?` (${esc(CAREERS[t.area].n)})`:''}`:''}${span?`, ${span}`:''}</h3>
+    <span class="muted">${[dd.rankName, `Age ${dd.age}`, t.rerolls?`${t.rerolls} ${t.rerolls===1?'reroll':'rerolls'}`:''].filter(Boolean).map(esc).join(', ')}</span></div>`;
+  let body = '';
+  if(!car) body = careerPicker(c,i);
+  else {
+    if(t.forced) body += `<p class="warn">Sentenced: this term is served as a Prisoner.</p>`;
+    else if(!t.incLocked) body += `<div class="row" style="margin-top:0"><button class="btn small" data-act="changeCareer">Change career</button></div>`;
+    body += incStep(c,i);
+    if(t.incLocked) body += promoStep(c,i);
+    if(promoResolved(t)) body += agingStep(c,i);
+    if(ageResolved(t,i)) body += warStep(c,i);
+    if(termDone(c,i)) body += termOutcome(c,i);
+  }
+  const scrap = S.confirmScrap
+    ? `<div class="row"><span>Scrap term ${i+1} and everything rolled in it?</span><button class="btn danger small" data-act="scrapTerm">Scrap term</button><button class="btn small" data-act="cancelScrap">Keep it</button></div>`
+    : `<div class="row"><button class="btn small danger" data-act="askScrap">Scrap this term</button></div>`;
+  return `<div class="term">${head}${body}${scrap}</div>`;
+}
+
+function termHistory(c,i){
+  const t = c.careers[i], car = CAREERS[t.career];
+  const dd = derive(c,i+1);
+  const uniq = [...new Set(t.inc)];
+  const bits = [
+    `Raised ${uniq.map(s=>`${s} to ${LETTERS[dd.skills[s]]}`).join(' and ')}`,
+    t.promo ? (t.promo.success ? `promoted${t.spec&&t.spec.name?`, learned ${t.spec.name}${t.spec.lang?` (${t.spec.lang})`:''}`:''}` : 'no promotion') : '',
+    `${t.years} ${t.years===1?'year':'years'}`,
+    t.ageAttr ? `age lowered ${t.ageAttr}` : '',
+    t.prisonRoll!=null && t.prisonRoll%2 ? 'sentenced to prison' : '',
+    t.override==='extraTerm' ? 'war held off by the Referee' : '',
+    (i===c.careers.length-1 && c.atWar) ? (t.override==='forcedWar' ? 'war forced by the Referee' : militiaWar(c,t,i) ? 'war broke out (local militia)' : 'war broke out') : '',
+    t.rerolls ? `${t.rerolls} ${t.rerolls===1?'reroll':'rerolls'}` : ''
+  ].filter(Boolean);
+  const span = termYears(c,i);
+  return `<div class="hist"><b>Term ${i+1}: ${esc(car.n)}${t.area?` (${esc(CAREERS[t.area].n)})`:''}${span?`, ${span}`:''}</b>
+    <div>${esc(bits.join('; '))}.</div>
+    <div class="muted">${esc([dd.rankName, `Age ${dd.age}`].filter(Boolean).join(', '))}</div></div>`;
+}
+
+function stepCareers(c){
+  const ready = phase1Done(c);
+  let body;
+  if(!ready){
+    body = `<p>Each term lasts D6 years and brings skills, a shot at promotion, and a specialty. After each term you age, and the war draws closer.</p><p class="muted">Finish childhood first.</p>`;
+  } else if(!c.careers.length){
+    body = `<p>Each term lasts D6 years and brings skills, a shot at promotion, and a specialty. After each term you age, and the war draws closer.</p>
+      <div class="row">${rollBtn('startTerm','Begin term 1')}</div>`;
+  } else {
+    const n = c.careers.length;
+    body = c.atWar
+      ? c.careers.map((_,i)=>termHistory(c,i)).join('')
+      : c.careers.slice(0,n-1).map((_,i)=>termHistory(c,i)).join('') + termPanel(c,n-1);
+  }
+  return `<section class="step ${ready?'':'locked'}">
+    <div class="step-head"><span class="step-num">4</span><h2>Career terms</h2></div>${body}</section>`;
+}
+
+function stepAtWar(c){
+  const head = `<div class="step-head"><span class="step-num">5</span><h2>At war</h2></div>`;
+  const w = c.atWar;
+  if(!w){
+    return `<section class="step locked">${head}
+      <p>When war breaks out you serve one final term: two skill increases of your choice and one last specialty. No promotion or aging.</p>
+      ${atWar(c)?'<p class="muted">Begin it from the last career term.</p>':''}</section>`;
+  }
+  const ctx = warCtx(c);
+  let body = '';
+  if(ctx.drafted) body += `<p class="warn">Drafted. Your last term before the war was civilian and you aren't local, so you serve in the military: ${ctx.needRC?'one increase must be Ranged Combat, ':''}the specialty comes from the Military table, and you'll take Combat Arms gear.</p>`;
+  else if(c.local && ctx.last.cat!=='military' && ctx.last.cat!=='intel') body += `<p class="note">As a local you aren't drafted.</p>`;
+
+  // skills
+  body += `<div class="tstep"><h4>Skill increases</h4>`;
+  if(w.incLocked){
+    const after = derive(c).skills;
+    body += `<div class="chips">${w.inc.map(s=>`<span class="chip" aria-pressed="true">${esc(s)} ${LETTERS[after[s]]}</span>`).join('')}</div>
+      ${w.rolls?'':'<div class="row"><button class="btn small" data-act="warEdit">Change increases</button></div>'}`;
+  } else {
+    const chips = SKILL_ORDER.map(s=>{
+      const on = w.inc.includes(s);
+      const now = s in ctx.base.skills ? LETTERS[ctx.base.skills[s]] : '–';
+      const next = levelAfter(ctx.base.skills, s, 1);
+      const can = on || (w.inc.length<2 && next<=3);
+      return `<button class="chip" data-act="warPick" data-v="${esc(s)}" aria-pressed="${on}" ${can?'':'disabled'}>${esc(s)} ${on?`${now}→${LETTERS[next]}`:now}</button>`;
+    }).join('');
+    const rcMissing = ctx.needRC && w.inc.length===2 && !w.inc.includes('Ranged Combat');
+    body += `<p class="note">Raise any two different skills one step each.</p><div class="chips">${chips}</div>
+      ${rcMissing?'<p class="warn">As a draftee, one increase must be Ranged Combat.</p>':''}
+      <div class="row"><span class="budget">${2-w.inc.length} left</span>
+      <button class="btn primary" data-act="warLock" ${w.inc.length===2 && !rcMissing?'':'disabled'}>Lock in increases</button></div>`;
+  }
+  body += `</div>`;
+
+  // specialty
+  if(w.incLocked){
+    const table = AT_WAR[ctx.col];
+    body += `<div class="tstep"><h4>Final specialty</h4>`;
+    if(!w.rolls){
+      body += `<p class="note">Roll D6 on the ${COL_NAMES[ctx.col]} column. Specialties you already know are rolled again automatically.</p>
+        <div class="row">${rollBtn('warSpec','Roll D6 for specialty')}</div>`;
+    } else {
+      const lastR = w.rolls[w.rolls.length-1];
+      body += `<div class="dice">${w.rolls.map(r=>die(r)).join('')} ${stamp(w.spec || table[lastR-1],'wspec',w.spec?'olive':'')} ${rerollBtn('rewarSpec')}</div>`;
+      if(w.rolls.length>1) body += `<p class="note">Rolled again past ${w.rolls.slice(0,-1).map(r=>esc(table[r-1])).join(', ')}, already known.</p>`;
+      if(w.allOwned){
+        const owned = new Set(ctx.base.specs.map(x=>x.name));
+        body += `<p class="note">You know every specialty on this table, so choose any other.</p>
+          <select class="txt" data-change="warPickSpec" aria-label="Choose a specialty"><option value="">Choose…</option>
+          ${ALL_SPECS.filter(x=>!owned.has(x)).map(x=>`<option ${w.spec===x?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+      }
+      if(w.spec==='Linguist') body += `<div class="row"><label>Language<br><input class="txt" data-field="warLang" value="${esc(w.lang)}" placeholder="e.g. German"></label></div>`;
+    }
+    body += `</div>`;
+  }
+
+  // capacities
+  if(warDone(c)){
+    const dd = derive(c), cap = capacities(dd);
+    const cmd = dd.skills.Command;
+    body += `<div class="tstep"><h4>Hit and stress capacity</h4>
+      <div class="dice">${stamp('Hit '+cap.hit,'','olive')} ${stamp('Stress '+cap.stress,'','olive')}</div>
+      <p class="note">Hit: STR D${sides(dd.attrs.STR)} + AGL D${sides(dd.attrs.AGL)}, divided by 4, rounded up. Stress: INT D${sides(dd.attrs.INT)} + EMP D${sides(dd.attrs.EMP)}, divided by 4, rounded up.</p>
+      <p class="note">Unit morale equals the highest Command in the group. This character's Command: ${cmd==null?'none':LETTERS[cmd]}.</p></div>`;
+  }
+  body += S.confirmScrap
+    ? `<div class="row"><span>Scrap the At War term?</span><button class="btn danger small" data-act="scrapWar">Scrap term</button><button class="btn small" data-act="cancelScrap">Keep it</button></div>`
+    : `<div class="row"><button class="btn small danger" data-act="askScrapWar">Scrap the At War term</button></div>`;
+  return `<section class="step">${head}<div class="term">${body}</div></section>`;
+}
+
+function suggestBlock(c, key){
+  const f = ensureFinal(c), sg = SUGGEST[key];
+  return `<div class="tstep"><h4>${sg.label}</h4><p class="note">${sg.hint} Tap a suggestion or write your own.</p>
+    <div class="chips">${sg.opts.map(o=>`<button class="chip" data-act="fset" data-v="${key}" data-v2="${esc(o)}" aria-pressed="${f[key]===o}">${esc(o)}</button>`).join('')}</div>
+    <textarea class="txt area" data-field="f_${key}" rows="2" placeholder="In your own words">${esc(f[key])}</textarea></div>`;
+}
+function stepFinal(c){
+  const head = `<div class="step-head"><span class="step-num">6</span><h2>Final details</h2></div>`;
+  if(!warDone(c)) return `<section class="step locked">${head}
+    <p>Moral code, big dream, buddy, appearance, gear, rations and starting rads come after the At War term.</p></section>`;
+  const f = ensureFinal(c), src = gearSource(c);
+  const others = Object.values(Store.chars).filter(x=>x.id!==c.id).map(displayName);
+  let body = `<div class="tstep"><h4>Nickname</h4>
+    <input class="txt" data-field="f_nickname" value="${esc(f.nickname)}" placeholder="e.g. Doc, Sparrow, El-Tee"></div>`;
+  body += suggestBlock(c,'moral') + suggestBlock(c,'dream');
+  body += `<div class="tstep"><h4>Buddy</h4><p class="note">Choose another player character.</p>
+    ${others.length?`<div class="chips">${others.map(o=>`<button class="chip" data-act="fset" data-v="buddy" data-v2="${esc(o)}" aria-pressed="${f.buddy===o}">${esc(o)}</button>`).join('')}</div>`:''}
+    <input class="txt" data-field="f_buddy" value="${esc(f.buddy)}" placeholder="Buddy's name" style="margin-top:8px"></div>`;
+  body += suggestBlock(c,'appearance') + suggestBlock(c,'met');
+
+  // gear
+  const items = gearItems(c), gd = f.gearDice;
+  body += `<div class="tstep"><h4>Starting gear</h4>
+    <p class="note">From your last career before the war: ${esc(CAREERS[src.key].n)}${src.drafted?' (drafted, so Combat Arms gear)':''}. Weapon models are filled in from ${esc(armoryFor(c.nationality).label)} for a ${esc(c.nationality||'—')} character; change any of them below.</p>
+    <ul class="gear">${items.map(it=>{
+      const r = gd && gd.items[it.idx] && gd.items[it.idx].text===it.chosen ? gd.items[it.idx] : null;
+      const rolled = r ? ` <strong>${r.total}</strong> <span class="muted">(${esc(it.dice.expr)}: ${r.rolls.join('+')})</span>` : (it.dice?` <span class="muted">(${esc(it.dice.expr)} to roll)</span>`:'');
+      const model = it.models && it.models.length ? `<div class="model"><select class="txt" data-change="gearModel" data-idx="${it.idx}" aria-label="Model for ${esc(it.chosen)}">
+          ${it.models.map(m=>`<option value="${esc(m[0])}" ${it.model&&it.model[0]===m[0]?'selected':''}>${esc(m[0])} (${esc(m[1])})</option>`).join('')}</select></div>` : '';
+      if(it.opts.length===1) return `<li>${esc(it.chosen)}${rolled}${model}</li>`;
+      return `<li><div class="chips">${it.opts.map(o=>`<button class="chip" data-act="gearPick" data-v="${it.idx}" data-v2="${esc(o)}" aria-pressed="${it.chosen===o}">${esc(o)}</button>`).join('')}</div>${it.chosen?`<div>${rolled}</div>`:''}${model}</li>`;
+    }).join('')}
+      <li>D6 rations of food, D6 rations of clean water, D6 rounds of ammo as currency${gd&&gd.food!=null?`: <strong>${gd.food}</strong> food, <strong>${gd.water}</strong> water, <strong>${gd.ammo}</strong> rounds`:''}</li>
+    </ul>
+    <label>Weapon notes<br><input class="txt" data-field="f_weapons" value="${esc(f.weapons)}" placeholder="e.g. scope, sling, spare magazine" style="max-width:420px"></label>
+    <div class="row">${!gearReady(c) ? '<span class="muted">Choose one option for each item first.</span>'
+      : !gd ? rollBtn('rollGear','Roll gear dice and rations')
+      : !gearRolled(c) ? rollBtn('rollGear','Roll dice for changed items')
+      : `${stamp('Gear issued','gear','olive')} ${rerollBtn('rerollGear','Rolls every gear die and ration again')}`}</div>
+    <p class="note">Pick group gear and any vehicle together with the other players.</p></div>`;
+
+  // rads
+  body += `<div class="tstep"><h4>Starting permanent rads</h4>
+    ${f.rads==null ? `<div class="row">${rollBtn('rollRads','Roll D6')}</div>`
+      : `<div class="dice">${die(f.rads)} ${stamp(f.rads+' rads','rads')} ${rerollBtn('rerollRads')}</div>`}</div>`;
+
+  const done = finalDone(c);
+  body += `<div class="row" style="margin-top:12px">
+    <button class="btn primary" data-act="openSheet">Open character sheet</button>
+    ${done?'<span class="stamp olive">Ready for play</span>':'<span class="muted">Needs a moral code, a big dream, gear and rads to be complete.</span>'}</div>`;
+  return `<section class="step">${head}${body}</section>`;
+}
+
+/* ---------- collapsible sections ---------- */
+function isOpen(key){ return !S.closed[(S.cur||'')+':'+key]; }
+function wrapStep(key, html, recap){
+  html = html.trim()
+    .replace(/^<section class="step([^"]*)">/, `<details class="step$1" data-sec="${key}" ${isOpen(key)?'open':''}>`)
+    .replace(/<div class="step-head">([\s\S]*?)<\/div>/, (m,inner)=>`<summary class="step-head">${inner}${recap?`<span class="recap">${esc(recap)}</span>`:''}</summary>`)
+    .replace(/<\/section>$/, '</details>');
+  return html;
+}
+function recaps(c){
+  const dd = derive(c), tl = timeline(c), ch = c.childhood;
+  const done = dd.doneTerms;
+  return {
+    nation: [c.nationality, c.local?'local':''].filter(Boolean).join(', '),
+    attrs: c.attrsLocked ? ATTRS.map(a=>`${a.k} ${LETTERS[c.attrs[a.k]]}`).join(' ') : (c.attrRoll?'In progress':''),
+    child: ch ? [ch.name, ch.skill, ch.specialty].filter(Boolean).join(', ') : '',
+    careers: c.careers.length ? [`${done} ${done===1?'term':'terms'}`, dd.rankName, tl?yrs(tl.y18, WAR_YEAR):''].filter(Boolean).join(', ') : '',
+    war: warDone(c) ? `Hit ${capacities(dd).hit}, stress ${capacities(dd).stress}` : (c.atWar ? 'In progress' : (atWar(c)?'Ready':'')),
+    final: finalDone(c) ? 'Ready for play' : (warDone(c) ? 'In progress' : '')
+  };
+}
+
+/* ---------- service record ---------- */
+function logGroup(text){
+  const m = /^Term (\d+)/.exec(text);
+  if(m) return 't'+(m[1]-1);
+  if(/^At War/.test(text)) return 'war';
+  if(/^Final:/.test(text)) return 'final';
+  return 'early';
+}
+const END_OF_TERM = /Served \d+|years served|age effects|Age lowers|for war|for prison|Referee override|scrapped/;
+function serviceRecord(c){
+  const tl = timeline(c);
+  const groups = new Map([['early',[]]]);
+  c.careers.forEach((_,i)=>groups.set('t'+i,[]));
+  for(const l of c.log){ const g = logGroup(l.text); if(!groups.has(g)) groups.set(g,[]); groups.get(g).push(l); }
+  const order = [...groups.keys()].sort((a,b)=>{
+    const rank = k => k==='early'?-1 : k==='war'?1e6 : k==='final'?1e6+1 : +k.slice(1);
+    return rank(a)-rank(b);
+  });
+  const fmt = t => new Date(t).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+  let html = '';
+  for(const g of order){
+    const entries = groups.get(g); if(!entries.length) continue;
+    let title, yearOf = () => '';
+    if(g==='early'){ title = 'Childhood and youth' + (tl?`, ${yrs(tl.birth, tl.y18)}`:''); }
+    else if(g==='war'){ title = 'At War' + (tl?`, ${WAR_YEAR}`:''); yearOf = () => tl?WAR_YEAR:''; }
+    else if(g==='final'){ title = 'Before play' + (tl?`, ${WAR_YEAR}`:''); yearOf = () => tl?WAR_YEAR:''; }
+    else {
+      const i = +g.slice(1), t = c.careers[i], car = t && CAREERS[t.career];
+      const span = tl && tl.terms[i];
+      title = `Term ${i+1}${car?`: ${car.n}`:t?'':' (scrapped)'}${span?`, ${yrs(span.start, span.end)}`:''}`;
+      if(span) yearOf = text => END_OF_TERM.test(text) ? span.end : span.start;
+    }
+    const key = 'log:'+g;
+    html += `<details class="lgroup" data-sec="${key}" ${isOpen(key)?'open':''}><summary>${esc(title)} <span class="muted">(${entries.length})</span></summary><ol>${
+      entries.map(l=>{
+        const text = l.text.replace(/^Term \d+: /,'').replace(/^At War: /,'').replace(/^Final: /,'');
+        const y = yearOf(l.text);
+        return `<li title="Recorded ${esc(fmt(l.t))}">${y?`<span class="yr">${y}</span>`:''}${esc(text)}</li>`;
+      }).join('')}</ol></details>`;
+  }
+  const note = tl
+    ? `<p class="note">Born ${tl.birth}. Turned 18 in ${tl.y18}. War broke out in ${WAR_YEAR} at age ${tl.finalAge}.</p>`
+    : `<p class="note">Years are filled in once war breaks out, counting back from ${WAR_YEAR}.</p>`;
+  return `<details class="log" data-sec="log" ${isOpen('log')?'open':''}><summary class="step-head"><h2>Service record</h2><span class="recap">${c.log.length} entries</span></summary>${note}${html}</details>`;
+}
+
+/* ---------- character sheet ---------- */
+function sheetData(c){
+  const dd = derive(c), f = ensureFinal(c), cap = capacities(dd), gd = f.gearDice;
+  return {
+    name: displayName(c), nickname: f.nickname, nationality: c.nationality, language: c.language, local: !!c.local,
+    rank: dd.rankName, age: dd.age, cuf: LETTERS[dd.cuf], hit: cap.hit, stress: cap.stress,
+    attrs: ATTRS.map(a=>({k:a.k, n:a.n, v:LETTERS[dd.attrs[a.k]], s:sides(dd.attrs[a.k])})),
+    skills: SKILL_ORDER.map(s=>({n:s, a:SKILL_ATTR[s], v: s in dd.skills ? LETTERS[dd.skills[s]] : '–'})),
+    specs: dd.specs.map(s=>s.name+(s.lang?` (${s.lang})`:'')),
+    command: dd.skills.Command==null ? 'none' : LETTERS[dd.skills.Command],
+    moral: f.moral, dream: f.dream, buddy: f.buddy, appearance: f.appearance, met: f.met,
+    gear: describeGear(c), weapons: f.weapons,
+    rations: gd && gd.food!=null ? `${gd.food} food, ${gd.water} clean water, ${gd.ammo} rounds of ammo` : '',
+    rads: f.rads,
+    born: timeline(c) ? timeline(c).birth : null,
+    history: [`Childhood: ${c.childhood?c.childhood.name:'—'}${timeline(c)?`, ${yrs(timeline(c).birth, timeline(c).y18)}`:''}`,
+      ...c.careers.map((t,i)=>`Term ${i+1}: ${CAREERS[t.career].n}${t.area?` (${CAREERS[t.area].n})`:''}, ${termYears(c,i)||`${t.years} ${t.years===1?'year':'years'}`}${t.promo&&t.promo.success?', promoted':''}`),
+      c.atWar ? `At War${warCtx(c).drafted?' (drafted)':''}, ${WAR_YEAR}` : '']
+      .filter(Boolean)
+  };
+}
+function viewSheet(){
+  const c = cur();
+  if(!c || !warDone(c)){ S.view='file'; return viewFile(); }
+  const x = sheetData(c);
+  const row = (k,v) => v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '';
+  return `
+  <div class="topbar noprint">
+    <button class="backlink" data-act="closeSheet">Back to the file</button>
+    <div class="row" style="margin-top:0">
+      <button class="btn" data-act="print">Print</button>
+      <button class="btn primary" data-act="pdf">Download PDF</button>
+    </div>
+  </div>
+  ${S.note?`<p class="warn noprint">${esc(S.note)}</p>`:''}
+  <article class="paper cs">
+    <header class="cs-head">
+      <div><h1>${esc(x.name)}</h1>${x.nickname?`<p class="sub">“${esc(x.nickname)}”</p>`:''}</div>
+      <dl class="kv">${row('Nationality',x.nationality)}${row('Language',x.language)}${row('Rank',x.rank)}${row('Age',String(x.age))}${row('Born',x.born?String(x.born):'')}</dl>
+    </header>
+    <div class="cs-grid">
+      <section><h3>Attributes</h3>
+        <div class="sgrid">${x.attrs.map(a=>`<div><small>${a.k}</small><strong>${a.v}</strong><small>D${a.s}</small></div>`).join('')}</div>
+        <dl class="kv">${row('Hit capacity',String(x.hit))}${row('Stress capacity',String(x.stress))}${row('Coolness under fire',x.cuf)}${row('Command (unit morale)',x.command)}${row('Permanent rads',x.rads==null?'':String(x.rads))}</dl>
+      </section>
+      <section><h3>Skills</h3>
+        <ul class="list">${x.skills.map(s=>`<li><span>${esc(s.n)} <span class="muted">${s.a}</span></span><strong>${s.v}</strong></li>`).join('')}</ul>
+      </section>
+      <section><h3>Specialties</h3><ul class="list">${x.specs.map(s=>`<li>${esc(s)}</li>`).join('')||'<li class="muted">None</li>'}</ul>
+        <h3 style="margin-top:12px">Service</h3><ul class="list">${x.history.map(h=>`<li>${esc(h)}</li>`).join('')}</ul>
+      </section>
+      <section><h3>Gear</h3><ul class="list">${x.gear.map(g=>`<li>${esc(g)}</li>`).join('')}${x.rations?`<li>${esc(x.rations)}</li>`:''}</ul>
+        ${x.weapons?`<p class="note">Weapon notes: ${esc(x.weapons)}</p>`:''}
+      </section>
+    </div>
+    <section class="cs-words">
+      <dl class="kv">${row('Moral code',x.moral)}${row('Big dream',x.dream)}${row('Buddy',x.buddy)}${row('Appearance',x.appearance)}${row('How we met',x.met)}</dl>
+      ${x.local?'<p class="note">Local: knows the area, has contacts and a home there, and speaks the local language fluently.</p>':''}
+    </section>
+  </article>`;
+}
+
+async function downloadPdf(c){
+  const set = t => { S.note = t; render(); };
+  if(!window.jspdf || !window.jspdf.jsPDF){ set('The PDF tool did not load. Check your connection and try again.'); return; }
+  const x = sheetData(c);
+  const doc = new window.jspdf.jsPDF({unit:'pt', format:'letter'});
+  const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(), M = 48;
+  let y = M;
+  const need = h => { if(y + h > H - M){ doc.addPage(); y = M; } };
+  const line = (txt, size=10, bold=false, gap=4) => {
+    doc.setFont('courier', bold?'bold':'normal'); doc.setFontSize(size);
+    for(const l of doc.splitTextToSize(txt, W-2*M)){ need(size+gap); doc.text(l, M, y); y += size+gap; }
+  };
+  const head = t => { y += 8; need(24); doc.setDrawColor(80); doc.line(M, y-12, W-M, y-12); line(t, 12, true, 6); };
+  doc.setTextColor(30,30,25);
+  line('TWILIGHT: 2000 PERSONNEL FILE', 9, false, 6);
+  line(x.name + (x.nickname?`  "${x.nickname}"`:''), 20, true, 8);
+  line([x.nationality, x.language && `Language: ${x.language}`, x.rank, `Age ${x.age}`, x.born && `Born ${x.born}`].filter(Boolean).join('   '));
+  head('Attributes');
+  line(x.attrs.map(a=>`${a.k} ${a.v} (D${a.s})`).join('   '));
+  line(`Hit capacity ${x.hit}   Stress capacity ${x.stress}   Coolness ${x.cuf}   Command ${x.command}   Rads ${x.rads??'-'}`);
+  head('Skills');
+  const half = Math.ceil(x.skills.length/2);
+  for(let k=0;k<half;k++){
+    const a = x.skills[k], b = x.skills[k+half];
+    const col = s => s ? `${(s.n+' ('+s.a+')').padEnd(26,'.')} ${s.v}` : '';
+    line(`${col(a).padEnd(34)}${col(b)}`);
+  }
+  head('Specialties'); line(x.specs.join(', ') || 'None');
+  head('Gear'); x.gear.forEach(g=>line('- '+g)); if(x.rations) line('- '+x.rations); if(x.weapons) line('Weapon notes: '+x.weapons);
+  head('Character');
+  [['Moral code',x.moral],['Big dream',x.dream],['Buddy',x.buddy],['Appearance',x.appearance],['How we met',x.met]]
+    .filter(([,v])=>v).forEach(([k,v])=>line(`${k}: ${v}`));
+  if(x.local) line('Local: knows the area, has contacts and a home there, speaks the local language fluently.');
+  head('Service'); x.history.forEach(h=>line(h));
+
+  const filename = `${x.name.replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'_') || 'character'}_T2K.pdf`;
+  let dl = null;
+  try{ dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; }catch(e){ dl = null; }
+  if(dl){
+    try{ await dl.save({filename, data: doc.output('blob')}); set(''); return; }
+    catch(e){
+      if(e && (e.code==='cancelled' || e.code==='declined' || e.code==='user_declined')){ set(''); return; }
+      try{ await dl.save({filename, data: new Uint8Array(doc.output('arraybuffer'))}); set(''); return; }
+      catch(e2){ set('The download was not saved. Try again, or use Print.'); return; }
+    }
+  }
+  try{ doc.save(filename); set(''); }catch(e){ set('Downloads are not available here. Use Print instead.'); }
+}
+
+function sheet(c){
+  const dd = derive(c);
+  const skills = Object.entries(dd.skills).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  const specs = dd.specs.map(s=>`<li><span>${esc(s.name+(s.lang?` (${s.lang})`:''))}</span><span class="muted">${esc(s.source)}</span></li>`).join('');
+  const lowered = ATTRS.some(a=>dd.attrs[a.k]!==c.attrs[a.k]);
+  return `<aside class="paper sheet" aria-label="Character summary">
+    <h3>Summary</h3>
+    <dl class="kv">
+      <dt>Nationality</dt><dd>${esc(c.nationality||'—')}</dd>
+      <dt>Language</dt><dd>${esc(c.language||'—')}</dd>
+      <dt>Age</dt><dd>${dd.age}</dd>
+      ${timeline(c)?`<dt>Born</dt><dd>${timeline(c).birth}</dd>`:''}
+      ${dd.rankName?`<dt>Rank</dt><dd>${esc(dd.rankName)}</dd>`:''}
+      <dt>Coolness</dt><dd>${LETTERS[dd.cuf]}</dd>
+      <dt>Terms</dt><dd>${dd.doneTerms}</dd>
+      <dt>Childhood</dt><dd>${esc(c.childhood?c.childhood.name:'—')}</dd>
+      <dt>Hit capacity</dt><dd>${capacities(dd).hit}</dd>
+      <dt>Stress capacity</dt><dd>${capacities(dd).stress}</dd>
+      <dt>Command</dt><dd>${dd.skills.Command==null?'—':LETTERS[dd.skills.Command]}</dd>
+    </dl>
+    ${c.local?'<p class="note">Local: knows the area, has contacts and a home there, and speaks the local language fluently.</p>':''}
+    <div class="sgrid">${ATTRS.map(a=>`<div><small>${a.k}</small><strong>${LETTERS[dd.attrs[a.k]]}</strong></div>`).join('')}</div>
+    ${lowered?'<p class="note" style="margin-top:0">Includes age effects.</p>':''}
+    <div class="sheet-sec">Skills</div>
+    <ul class="list">${skills.length?skills.map(([k,v])=>`<li><span>${esc(k)}</span><strong>${LETTERS[v]}</strong></li>`).join(''):'<li class="muted">None yet</li>'}</ul>
+    <div class="sheet-sec">Specialties</div>
+    <ul class="list">${specs||'<li class="muted">None yet</li>'}</ul>
+  </aside>`;
+}
+
+function viewFile(){
+  const c = cur();
+  if(!c){ S.view='roster'; return viewRoster(); }
+  const fmt = t => new Date(t).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+  const st = statusOf(c);
+  return `
+  <div class="topbar">
+    <button class="backlink" data-act="back">Back to all files</button>
+    <span class="savebar" id="savebar">${esc(Store.status)}</span>
+  </div>
+  <div class="dossier">
+    <main class="paper">
+      <div class="cover">
+        <div class="namefield">
+          <label for="nm">Name</label>
+          <input id="nm" data-field="name" value="${esc(c.name)}" placeholder="Unnamed recruit ${c.fileNo}" autocomplete="off">
+        </div>
+        <div><div class="fileno">File ${esc(c.id)}</div><span class="stamp ${st.cls}">${esc(st.t)}</span></div>
+      </div>
+      ${(()=>{ const r = recaps(c); return [
+        wrapStep('nation', stepNation(c), r.nation),
+        wrapStep('attrs', stepAttrs(c), r.attrs),
+        wrapStep('child', stepChild(c), r.child),
+        wrapStep('careers', stepCareers(c), r.careers),
+        wrapStep('war', stepAtWar(c), r.war),
+        wrapStep('final', stepFinal(c), r.final)].join(''); })()}
+      <div class="row" style="margin-top:14px"><button class="btn small" data-act="collapseAll">Collapse all</button><button class="btn small" data-act="expandAll">Expand all</button></div>
+      ${serviceRecord(c)}
+      <div class="row" style="margin-top:22px">
+        ${S.confirmDelete
+          ? `<span>Shred this file for good?</span><button class="btn danger" data-act="delete">Shred file</button><button class="btn" data-act="cancelDelete">Keep it</button>`
+          : `<button class="btn danger small" data-act="askDelete">Shred file</button>`}
+      </div>
+    </main>
+    ${sheet(c)}
+  </div>`;
+}
+
+/* ================= render ================= */
+const app = document.getElementById('app');
+function render(){
+  const active = document.activeElement;
+  const field = active && active.dataset ? active.dataset.field : null;
+  const pos = field ? active.selectionStart : null;
+  const c0 = cur(); if(c0 && warDone(c0)) ensureFinal(c0);
+  app.innerHTML = S.view==='sheet' ? viewSheet() : S.view==='file' ? viewFile() : viewRoster();
+  S.flash = null;
+  if(field){
+    const el = app.querySelector(`[data-field="${field}"]`);
+    if(el){ el.focus(); try{ el.setSelectionRange(pos,pos); }catch(e){} }
+  }
+}
+function updateSaveBar(){ const el=document.getElementById('savebar'); if(el) el.textContent = Store.status; }
+
+app.addEventListener('click', e=>{
+  const b = e.target.closest('[data-act]');
+  if(!b || b.disabled) return;
+  act(b.dataset.act, b.dataset.v, b.dataset.v2);
+});
+app.addEventListener('toggle', e=>{
+  const el = e.target;
+  if(el && el.dataset && el.dataset.sec) S.closed[(S.cur||'')+':'+el.dataset.sec] = !el.open;
+}, true);
+app.addEventListener('change', e=>{
+  const k = e.target.dataset.change;
+  if(k==='gearModel') act(k, e.target.dataset.idx, e.target.value);
+  else if(k) act(k, e.target.value);
+});
+app.addEventListener('input', e=>{
+  const f = e.target.dataset.field; const c = cur();
+  if(!f || !c) return;
+  const v = e.target.value;
+  if(f==='childLang'){ if(c.childhood) c.childhood.language = v; }
+  else if(f.startsWith('f_')){ ensureFinal(c)[f.slice(2)] = v; c.updated = Date.now(); Store.queue(); return; }
+  else if(f==='warLang'){ if(c.atWar) c.atWar.lang = v; }
+  else if(f==='termLang'){ const t=c.careers[c.careers.length-1]; if(t && t.spec) t.spec.lang = v; }
+  else c[f] = v;
+  c.updated = Date.now(); Store.queue();
+  if(f==='name') return;
+  render();
+});
+
+Store.loadLocal();
+render();
+Store.connect();
+</script>
+
+</body>
+</html>
